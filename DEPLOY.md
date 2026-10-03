@@ -1,7 +1,7 @@
 # Deploy
 
 ## Preview locally
-Animations load from `assets/lottie/preview.json`, which browsers block on `file://`.
+Animations load from `assets/lottie/preview.dat`, which browsers block on `file://`.
 Run a local server in the repo folder and open http://localhost:8000:
 
     python3 -m http.server 8000
@@ -18,5 +18,5 @@ site updates within a minute or two at https://zeltrium.com.
   emails sent before the switch keep working. Delete it in a month or two.
 
 ## Changing animations
-Replace a file in the pack, then rebuild `assets/lottie/preview.json`
-(object with `sizes` in KB and `anims` keyed by file name).
+Replace a file in the pack, then rebuild `assets/lottie/preview.dat`
+(brand-recolored, XOR-encoded with the key in script.js, base64).

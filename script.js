@@ -1,5 +1,5 @@
 /* Zeltrium — page behaviour.
-   Animations: assets/lottie/preview.json (all 30, one request), played with lottie_light (MIT).
+   Animations: assets/lottie/preview.dat (all 30 in brand colors, one request), played with lottie_light (MIT).
    No cookies, no analytics, no third-party scripts. The only outside request is the
    free-pack form posting the email to MailerLite. */
 document.querySelectorAll('.year').forEach(el => el.textContent = new Date().getFullYear());
@@ -21,41 +21,23 @@ const KIND = {};
 ['success','error','warning','info','help'].forEach(k => KIND[k] = 'draw');
 ['download','upload','progress_circular','progress_linear','copy'].forEach(k => KIND[k] = 'fade');
 ORDER.forEach(k => { KIND[k] = KIND[k] || 'once'; });
-const SEMANTIC = new Set(['success','error','warning','info','help']);
-const ACCENT_LAYER = /progress_bar|checkmark|radio_dot|_fill|check_bg|garbage_item|active_badge/;
 const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
 let paused = false;
 
-const P = {night:'#0E0E0E', paper:'#F2F1ED', signal:'#FF4A1C', track:'#4A4945'};
-const GRAY = '#7D90AF', WHITE = '#FFFFFF';
+// Previews ship already in brand colors: outlines Paper, the "moment" Signal.
+// The recolor demo swaps those two for the picked color; track, knob and dark details stay.
+const BRAND = ['#F2F1ED', '#FF4A1C'];
 const rgb = h => [parseInt(h.slice(1,3),16)/255, parseInt(h.slice(3,5),16)/255, parseInt(h.slice(5,7),16)/255];
 const hexOf = k => '#' + k.slice(0,3).map(v => Math.round(v*255).toString(16).padStart(2,'0')).join('').toUpperCase();
-
-// Brand recolor: outlines in Paper, the "moment" (fills, checkmarks, progress, status glyphs) in Signal.
-// Status icons keep a Paper circle with a Signal glyph inside.
-function pick(key, mode, ty, hex, hasEl, layer){
-  if (hex === GRAY) return P.track;
-  if (hex === WHITE) return ty === 'fl' ? P.paper : P.night;
-  if (mode !== 'brand') return mode;
-  if (SEMANTIC.has(key)) return (ty === 'st' && hasEl) ? P.paper : P.signal;
-  if (ACCENT_LAYER.test(layer)) return P.signal;
-  return ty === 'fl' ? P.signal : P.paper;
-}
 function recolor(key, mode){
   const data = JSON.parse(JSON.stringify(ANIMS[key]));
-  if (mode === 'original') return data;
-  function items(arr, layer){
-    const hasEl = arr.some(i => i.ty === 'el');
-    arr.forEach(i => {
-      if (i.ty === 'gr') items(i.it || [], layer);
-      else if ((i.ty === 'fl' || i.ty === 'st') && i.c && i.c.a === 0) {
-        const a = i.c.k[3] ?? 1;
-        i.c.k = [...rgb(pick(key, mode, i.ty, hexOf(i.c.k), hasEl, layer)), a];
-      }
-    });
-  }
-  const layers = [...data.layers, ...((data.assets || []).flatMap(a => a.layers || []))];
-  layers.forEach(L => items(L.shapes || [], L.nm || ''));
+  if (mode === 'brand') return data;
+  (function walk(o){
+    if (Array.isArray(o)) { o.forEach(walk); return; }
+    if (!o || typeof o !== 'object') return;
+    if ((o.ty === 'fl' || o.ty === 'st') && o.c && o.c.a === 0 && BRAND.includes(hexOf(o.c.k))) o.c.k = [...rgb(mode), o.c.k[3] ?? 1];
+    for (const v in o) walk(o[v]);
+  })(data);
   return data;
 }
 
@@ -160,7 +142,13 @@ function tile(key, i, cap){
   document.getElementById('reset-form').addEventListener('click', () => { sent.hidden = true; form.hidden = false; email.value = ''; email.focus(); });
 })();
 
-fetch('assets/lottie/preview.json').then(r => r.json()).then(d => {
+// previews are lightly encoded so the files aren't one right-click away
+function decode(txt){
+  const key = 'zeltrium-motion', bin = atob(txt.trim()), out = new Uint8Array(bin.length);
+  for (let i = 0; i < bin.length; i++) out[i] = bin.charCodeAt(i) ^ key.charCodeAt(i % key.length);
+  return JSON.parse(new TextDecoder().decode(out));
+}
+fetch('assets/lottie/preview.dat').then(r => r.text()).then(decode).then(d => {
   ANIMS = d.anims; SIZES = d.sizes; window.ANIMS = ANIMS;
   if (!window.lottie) return;
   init();
