@@ -12,8 +12,10 @@ site updates within a minute or two at https://zeltrium.com.
 
 ## Free pack email (MailerLite)
 - Form: `free-form` in `index.html` posts to MailerLite form 200318522151143170.
-- Double opt-in is on in MailerLite. The welcome automation should link to
-  https://zeltrium.com/downloads/zeltrium-free-5.zip
+- The site shows the download right after the form is sent. MailerLite's own
+  double opt-in email (not customizable on the free plan) confirms the address.
+- After confirmation, the automation sends `email/free-5-delivery.html` with the
+  link https://zeltrium.com/downloads/zeltrium-free-5.zip and the upsell.
 - The old `downloads/ui-microinteractions-free-pack.zip` stays so links in
   emails sent before the switch keep working. Delete it in a month or two.
 
