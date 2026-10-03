@@ -12,8 +12,10 @@ GitHub Pages показывает ветку `main`. Слей pull request в `m
 
 ## Письмо с бесплатным паком (MailerLite)
 - Форма `free-form` в `index.html` отправляет почту в форму MailerLite 200318522151143170.
-- Double opt-in включён в MailerLite. В приветственной автоматизации ссылка на
-  https://zeltrium.com/downloads/zeltrium-free-5.zip
+- Сайт отдаёт архив сразу после отправки формы. Стандартное письмо подтверждения
+  MailerLite (на бесплатном тарифе не редактируется) подтверждает адрес.
+- После подтверждения автоматизация шлёт `email/free-5-delivery.html` со ссылкой
+  https://zeltrium.com/downloads/zeltrium-free-5.zip и предложением полного пака.
 - Старый `downloads/ui-microinteractions-free-pack.zip` оставлен, чтобы ссылки в уже
   отправленных письмах работали. Удали его через месяц-два.
 

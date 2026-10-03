@@ -24,18 +24,32 @@ ORDER.forEach(k => { KIND[k] = KIND[k] || 'once'; });
 const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
 let paused = false;
 
-// Previews ship already in brand colors: outlines Paper, the "moment" Signal.
+// Previews ship already in brand colors: outlines Paper, the "moment" Signal (like, favorite and bookmark fully Signal).
 // The recolor demo swaps those two for the picked color; track, knob and dark details stay.
-const BRAND = ['#F2F1ED', '#FF4A1C'];
+const BRAND = ['#F2F1ED', '#FF4A1C'], KNOB = '#F2F1EE';
 const rgb = h => [parseInt(h.slice(1,3),16)/255, parseInt(h.slice(3,5),16)/255, parseInt(h.slice(5,7),16)/255];
 const hexOf = k => '#' + k.slice(0,3).map(v => Math.round(v*255).toString(16).padStart(2,'0')).join('').toUpperCase();
 function recolor(key, mode){
   const data = JSON.parse(JSON.stringify(ANIMS[key]));
   if (mode === 'brand') return data;
+  if (mode === 'onlight') { // light card: outlines go dark, the Signal accent stays
+    (function walk(o){ if (Array.isArray(o)) { o.forEach(walk); return; } if (!o || typeof o !== 'object') return;
+      if ((o.ty === 'fl' || o.ty === 'st') && o.c && o.c.a === 0 && hexOf(o.c.k) === '#F2F1ED') o.c.k = [...rgb('#0E0E0E'), o.c.k[3] ?? 1];
+      for (const v in o) walk(o[v]); })(data);
+    return data;
+  }
+  const [r, g, b] = rgb(mode), light = 0.2126 * r + 0.7152 * g + 0.0722 * b > 0.6;
   (function walk(o){
     if (Array.isArray(o)) { o.forEach(walk); return; }
     if (!o || typeof o !== 'object') return;
-    if ((o.ty === 'fl' || o.ty === 'st') && o.c && o.c.a === 0 && BRAND.includes(hexOf(o.c.k))) o.c.k = [...rgb(mode), o.c.k[3] ?? 1];
+    if ((o.ty === 'fl' || o.ty === 'st') && o.c && o.c.a === 0) {
+      const h = hexOf(o.c.k);
+      if (BRAND.includes(h)) o.c.k = [...rgb(mode), o.c.k[3] ?? 1];
+      // on a light color the "on" track turns light too, so the knob goes from light (off) to dark (on)
+      else if (h === KNOB && light) o.c = {a:1, k:[ // knob fades light → dark as the track fills
+        {t:0, s:[...rgb('#F2F1ED'), 1], i:{x:[0.4], y:[1]}, o:{x:[0.6], y:[0]}},
+        {t:8, s:[...rgb('#0E0E0E'), 1]}]};
+    }
     for (const v in o) walk(o[v]);
   })(data);
   return data;
@@ -131,7 +145,7 @@ function tile(key, i, cap){
       await fetch(form.action, {method:'POST', body:data, mode:'no-cors'});
       document.getElementById('sent-to').textContent = value;
       form.hidden = true; sent.hidden = false;
-      if (window.lottie && window.ANIMS) { if (!sentP) sentP = player(document.getElementById('sent-anim'), 'success'); play(sentP); }
+      if (window.lottie && window.ANIMS) { if (!sentP) sentP = player(document.getElementById('sent-anim'), 'success', {mode:'onlight'}); play(sentP); }
     } catch (x) {
       err.textContent = 'Couldn\'t reach the mail server. Check your connection and try again, or email zeltriumstudio@gmail.com.';
       err.hidden = false;
