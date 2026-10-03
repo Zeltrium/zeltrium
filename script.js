@@ -32,6 +32,12 @@ const hexOf = k => '#' + k.slice(0,3).map(v => Math.round(v*255).toString(16).pa
 function recolor(key, mode){
   const data = JSON.parse(JSON.stringify(ANIMS[key]));
   if (mode === 'brand') return data;
+  if (mode === 'onlight') { // light card: outlines go dark, the Signal accent stays
+    (function walk(o){ if (Array.isArray(o)) { o.forEach(walk); return; } if (!o || typeof o !== 'object') return;
+      if ((o.ty === 'fl' || o.ty === 'st') && o.c && o.c.a === 0 && hexOf(o.c.k) === '#F2F1ED') o.c.k = [...rgb('#0E0E0E'), o.c.k[3] ?? 1];
+      for (const v in o) walk(o[v]); })(data);
+    return data;
+  }
   const [r, g, b] = rgb(mode), light = 0.2126 * r + 0.7152 * g + 0.0722 * b > 0.6;
   (function walk(o){
     if (Array.isArray(o)) { o.forEach(walk); return; }
@@ -139,7 +145,7 @@ function tile(key, i, cap){
       await fetch(form.action, {method:'POST', body:data, mode:'no-cors'});
       document.getElementById('sent-to').textContent = value;
       form.hidden = true; sent.hidden = false;
-      if (window.lottie && window.ANIMS) { if (!sentP) sentP = player(document.getElementById('sent-anim'), 'success'); play(sentP); }
+      if (window.lottie && window.ANIMS) { if (!sentP) sentP = player(document.getElementById('sent-anim'), 'success', {mode:'onlight'}); play(sentP); }
     } catch (x) {
       err.textContent = 'Couldn\'t reach the mail server. Check your connection and try again, or email zeltriumstudio@gmail.com.';
       err.hidden = false;
