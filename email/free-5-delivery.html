@@ -4,51 +4,71 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="x-apple-disable-message-reformatting">
-<meta name="color-scheme" content="dark">
-<meta name="supported-color-schemes" content="dark">
+<meta name="color-scheme" content="light dark">
+<meta name="supported-color-schemes" content="light dark">
 <title>Your 5 free micro-interactions</title>
 <!--
   Zeltrium — free pack delivery email (MailerLite, custom HTML editor).
-  Images are hosted on zeltrium.com/assets/email/.
+  Light by default; clients that support prefers-color-scheme (Apple Mail, iOS Mail,
+  Outlook for Mac) get the brand dark version. Gmail apps invert light emails on their
+  own, so the light default is what survives there.
+  Images (zeltrium.com/assets/email/) have transparent backgrounds and their own dark
+  tiles, so they read on both grounds.
   MailerLite tags used: {$unsubscribe}. Keep it: MailerLite requires an unsubscribe link.
 -->
 <style>
-  body{margin:0;padding:0;background:#0E0E0E}
-  a{color:#F2F1ED}
+  :root{color-scheme:light dark;supported-color-schemes:light dark}
+  body{margin:0;padding:0;background:#F2F1ED}
   @media (max-width:600px){
     .px{padding-left:24px!important;padding-right:24px!important}
     .h1{font-size:30px!important;line-height:34px!important}
     .btn a{display:block!important}
   }
+  @media (prefers-color-scheme:dark){
+    .bg{background:#0E0E0E!important}
+    .card{background:#1A1A19!important;border-color:#2C2C2A!important}
+    .inset{background:#0E0E0E!important}
+    .rule{border-color:#2C2C2A!important}
+    .t1{color:#F2F1ED!important}
+    .t2{color:#B9B7B0!important}
+    .t3{color:#8A8983!important}
+    .t4{color:#6B6A65!important}
+    .ghost{border-color:#F2F1ED!important}
+    .ghost a{color:#F2F1ED!important}
+  }
+  [data-ogsc] .bg{background:#0E0E0E!important}
+  [data-ogsc] .card{background:#1A1A19!important}
+  [data-ogsc] .t1{color:#F2F1ED!important}
+  [data-ogsc] .t2{color:#B9B7B0!important}
 </style>
 </head>
-<body style="margin:0;padding:0;background:#0E0E0E;">
+<body class="bg" style="margin:0;padding:0;background:#F2F1ED;">
 <!-- preheader: shows as the preview line in the inbox -->
-<div style="display:none;max-height:0;overflow:hidden;opacity:0;color:#0E0E0E;font-size:1px;line-height:1px;">Success, error, copy, checkbox, refresh. JSON + .lottie, ready to drop in.&#8199;&#847;&#8199;&#847;&#8199;&#847;&#8199;&#847;&#8199;&#847;&#8199;&#847;&#8199;&#847;&#8199;&#847;&#8199;&#847;&#8199;&#847;</div>
+<div style="display:none;max-height:0;overflow:hidden;opacity:0;font-size:1px;line-height:1px;">Success, error, copy, checkbox, refresh. Light and dark sets, ready to drop in.&#8199;&#847;&#8199;&#847;&#8199;&#847;&#8199;&#847;&#8199;&#847;&#8199;&#847;&#8199;&#847;&#8199;&#847;&#8199;&#847;&#8199;&#847;</div>
 
-<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" bgcolor="#0E0E0E" style="background:#0E0E0E;">
+<table role="presentation" class="bg" width="100%" cellpadding="0" cellspacing="0" border="0" bgcolor="#F2F1ED" style="background:#F2F1ED;">
 <tr><td align="center" style="padding:32px 12px;">
 
   <table role="presentation" width="600" cellpadding="0" cellspacing="0" border="0" style="width:100%;max-width:600px;">
 
-    <!-- logo -->
-    <tr><td class="px" style="padding:8px 40px 32px;">
-      <a href="https://zeltrium.com" style="text-decoration:none;"><img src="https://zeltrium.com/assets/email/logo.png" width="177" height="20" alt="Zeltrium" style="display:block;border:0;width:177px;height:20px;"></a>
+    <!-- logo: dark badge with transparent corners, reads on light and dark -->
+    <tr><td class="px" style="padding:8px 40px 28px;">
+      <a href="https://zeltrium.com" style="text-decoration:none;"><img src="https://zeltrium.com/assets/email/logo-badge.png" width="236" height="48" alt="Zeltrium" style="display:block;border:0;width:236px;height:48px;"></a>
     </td></tr>
 
     <!-- card -->
-    <tr><td bgcolor="#1A1A19" style="background:#1A1A19;border:1px solid #2C2C2A;border-radius:24px;">
+    <tr><td class="card" bgcolor="#FFFFFF" style="background:#FFFFFF;border:1px solid #E4E2DC;border-radius:24px;">
       <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">
 
         <tr><td class="px" style="padding:40px 40px 0;font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;">
-          <p style="margin:0 0 12px;font-family:Menlo,Consolas,'Courier New',monospace;font-size:12px;letter-spacing:1px;text-transform:uppercase;color:#8A8983;">Thanks for confirming</p>
-          <h1 class="h1" style="margin:0;font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;font-size:36px;line-height:40px;font-weight:800;letter-spacing:-1px;color:#F2F1ED;">Your 5 free animations are <span style="color:#FF4A1C;">here.</span></h1>
-          <p style="margin:16px 0 0;font-size:16px;line-height:25px;color:#B9B7B0;">Success, error, copy, checkbox and refresh. Each comes as .json and .lottie, with a README of snippets for React, Swift, Android, Flutter, Framer and Webflow.</p>
+          <p class="t3" style="margin:0 0 12px;font-family:Menlo,Consolas,'Courier New',monospace;font-size:12px;letter-spacing:1px;text-transform:uppercase;color:#5E5D58;">Thanks for confirming</p>
+          <h1 class="h1 t1" style="margin:0;font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;font-size:36px;line-height:40px;font-weight:800;letter-spacing:-1px;color:#121212;">Your 5 free animations are <span style="color:#FF4A1C;">here.</span></h1>
+          <p class="t2" style="margin:16px 0 0;font-size:16px;line-height:25px;color:#3A3936;">Success, error, copy, checkbox and refresh. Each comes as .json and .lottie, in a dark and a light set, with a README of snippets for React, Swift, Android, Flutter, Framer and Webflow.</p>
         </td></tr>
 
-        <!-- preview strip -->
+        <!-- preview strip: dark tiles, transparent around them -->
         <tr><td class="px" style="padding:28px 40px 0;">
-          <img src="https://zeltrium.com/assets/email/free-5.png" width="520" alt="Success, error, copy, checkbox and refresh icons" style="display:block;border:0;width:100%;max-width:520px;height:auto;">
+          <img src="https://zeltrium.com/assets/email/free-5-tiles.png" width="520" alt="Success, error, copy, checkbox and refresh icons" style="display:block;border:0;width:100%;max-width:520px;height:auto;">
         </td></tr>
 
         <!-- download button -->
@@ -58,30 +78,30 @@
               <a href="https://zeltrium.com/downloads/zeltrium-free-5.zip" style="display:inline-block;padding:16px 28px;font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;font-size:16px;line-height:16px;font-weight:700;color:#0E0E0E;text-decoration:none;border-radius:12px;">Download the free 5</a>
             </td>
           </tr></table>
-          <p style="margin:10px 0 0;font-family:Menlo,Consolas,'Courier New',monospace;font-size:12px;color:#8A8983;">.zip · 23 KB · light &amp; dark sets · free for commercial use</p>
+          <p class="t3" style="margin:10px 0 0;font-family:Menlo,Consolas,'Courier New',monospace;font-size:12px;color:#5E5D58;">.zip · 23 KB · light &amp; dark sets · free for commercial use</p>
         </td></tr>
 
         <!-- tips -->
         <tr><td class="px" style="padding:32px 40px 0;font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;">
-          <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="border-top:1px solid #2C2C2A;">
+          <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" class="rule" style="border-top:1px solid #E4E2DC;">
             <tr><td style="padding:24px 0 0;">
-              <p style="margin:0 0 12px;font-size:15px;line-height:22px;font-weight:700;color:#F2F1ED;">Three tips</p>
-              <p style="margin:0 0 10px;font-size:15px;line-height:23px;color:#B9B7B0;"><span style="color:#FF4A1C;">&#9679;</span>&nbsp; Pick the set for your background: <b style="color:#F2F1ED;font-weight:600;">dark</b> has light lines for dark UIs, <b style="color:#F2F1ED;font-weight:600;">light</b> has dark lines for light UIs.</p>
-              <p style="margin:0 0 10px;font-size:15px;line-height:23px;color:#B9B7B0;"><span style="color:#FF4A1C;">&#9679;</span>&nbsp; Checkbox plays forward to check and backward to uncheck. Reverse it instead of restarting it.</p>
-              <p style="margin:0;font-size:15px;line-height:23px;color:#B9B7B0;"><span style="color:#FF4A1C;">&#9679;</span>&nbsp; Every color has a role (line, accent), so matching your brand is one value per role.</p>
+              <p class="t1" style="margin:0 0 12px;font-size:15px;line-height:22px;font-weight:700;color:#121212;">Three tips</p>
+              <p class="t2" style="margin:0 0 10px;font-size:15px;line-height:23px;color:#3A3936;"><span style="color:#FF4A1C;">&#9679;</span>&nbsp; Pick the set for your background: <b class="t1" style="color:#121212;font-weight:600;">dark</b> has light lines for dark UIs, <b class="t1" style="color:#121212;font-weight:600;">light</b> has dark lines for light UIs.</p>
+              <p class="t2" style="margin:0 0 10px;font-size:15px;line-height:23px;color:#3A3936;"><span style="color:#FF4A1C;">&#9679;</span>&nbsp; Checkbox plays forward to check and backward to uncheck. Reverse it instead of restarting it.</p>
+              <p class="t2" style="margin:0;font-size:15px;line-height:23px;color:#3A3936;"><span style="color:#FF4A1C;">&#9679;</span>&nbsp; Every color has a role (line, accent), so matching your brand is one value per role.</p>
             </td></tr>
           </table>
         </td></tr>
 
         <!-- upsell -->
         <tr><td class="px" style="padding:32px 40px 40px;font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;">
-          <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" bgcolor="#0E0E0E" style="background:#0E0E0E;border-radius:18px;">
+          <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" class="inset" bgcolor="#F2F1ED" style="background:#F2F1ED;border-radius:18px;">
             <tr><td style="padding:24px;">
-              <p style="margin:0;font-size:20px;line-height:26px;font-weight:800;letter-spacing:-0.5px;color:#F2F1ED;">Want the other 25?</p>
-              <p style="margin:8px 0 18px;font-size:15px;line-height:23px;color:#B9B7B0;">Likes, toggles, theme, uploads, deletes, notifications and more, in the same style and both color sets. All 30 for $29, with a 14-day refund, no questions asked.</p>
+              <p class="t1" style="margin:0;font-size:20px;line-height:26px;font-weight:800;letter-spacing:-0.5px;color:#121212;">Want the other 25?</p>
+              <p class="t2" style="margin:8px 0 18px;font-size:15px;line-height:23px;color:#3A3936;">Likes, toggles, theme, uploads, deletes, notifications and more, in the same style and both color sets. All 30 for $29, with a 14-day refund, no questions asked.</p>
               <table role="presentation" cellpadding="0" cellspacing="0" border="0" class="btn"><tr>
-                <td style="border:1px solid #F2F1ED;border-radius:12px;">
-                  <a href="https://zeltrium.gumroad.com/l/lottie-ui-micro-interactions" style="display:inline-block;padding:14px 24px;font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;font-size:15px;line-height:15px;font-weight:700;color:#F2F1ED;text-decoration:none;border-radius:12px;">Get all 30 — $29</a>
+                <td class="ghost" style="border:1px solid #121212;border-radius:12px;">
+                  <a href="https://zeltrium.gumroad.com/l/lottie-ui-micro-interactions" style="display:inline-block;padding:14px 24px;font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;font-size:15px;line-height:15px;font-weight:700;color:#121212;text-decoration:none;border-radius:12px;">Get all 30 — $29</a>
                 </td>
               </tr></table>
             </td></tr>
@@ -93,20 +113,20 @@
 
     <!-- sign-off -->
     <tr><td class="px" style="padding:32px 40px 0;font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;">
-      <p style="margin:0;font-size:15px;line-height:23px;color:#B9B7B0;">If you ship something with these, reply and show me. I read every email.</p>
-      <p style="margin:12px 0 0;font-size:15px;line-height:23px;color:#F2F1ED;">Roman · Zeltrium</p>
+      <p class="t2" style="margin:0;font-size:15px;line-height:23px;color:#3A3936;">If you ship something with these, reply and show me. I'd love to see it.</p>
+      <p class="t1" style="margin:12px 0 0;font-size:15px;line-height:23px;color:#121212;">Roman · Zeltrium</p>
     </td></tr>
 
     <!-- footer -->
     <tr><td class="px" style="padding:32px 40px 8px;font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;">
-      <p style="margin:0 0 10px;font-size:13px;line-height:20px;color:#8A8983;">
-        <a href="https://zeltrium.com" style="color:#B9B7B0;text-decoration:none;">zeltrium.com</a> &nbsp;·&nbsp;
-        <a href="https://x.com/zeltriumstudio" style="color:#B9B7B0;text-decoration:none;">X</a> &nbsp;·&nbsp;
-        <a href="https://zeltrium.com/imprint.html" style="color:#B9B7B0;text-decoration:none;">Imprint</a> &nbsp;·&nbsp;
-        <a href="https://zeltrium.com/privacy.html" style="color:#B9B7B0;text-decoration:none;">Privacy</a>
+      <p class="t3" style="margin:0 0 10px;font-size:13px;line-height:20px;color:#5E5D58;">
+        <a class="t2" href="https://zeltrium.com" style="color:#3A3936;text-decoration:none;">zeltrium.com</a> &nbsp;·&nbsp;
+        <a class="t2" href="https://x.com/zeltriumstudio" style="color:#3A3936;text-decoration:none;">X</a> &nbsp;·&nbsp;
+        <a class="t2" href="https://zeltrium.com/imprint.html" style="color:#3A3936;text-decoration:none;">Imprint</a> &nbsp;·&nbsp;
+        <a class="t2" href="https://zeltrium.com/privacy.html" style="color:#3A3936;text-decoration:none;">Privacy</a>
       </p>
-      <p style="margin:0;font-size:12px;line-height:19px;color:#6B6A65;">You're getting this because you asked for the free pack on zeltrium.com and confirmed your email. <a href="{$unsubscribe}" style="color:#8A8983;text-decoration:underline;">Unsubscribe</a> anytime.</p>
-      <p style="margin:10px 0 0;font-size:12px;line-height:19px;color:#6B6A65;">Zeltrium · Roman Ovcharenko · Raiffeisenstr. 21, 93354 Biburg, Germany</p>
+      <p class="t4" style="margin:0;font-size:12px;line-height:19px;color:#5E5D58;">You're getting this because you asked for the free pack on zeltrium.com and confirmed your email. <a class="t3" href="{$unsubscribe}" style="color:#5E5D58;text-decoration:underline;">Unsubscribe</a> anytime.</p>
+      <p class="t4" style="margin:10px 0 0;font-size:12px;line-height:19px;color:#5E5D58;">Zeltrium · Roman Ovcharenko · Raiffeisenstr. 21, 93354 Biburg, Germany</p>
     </td></tr>
 
   </table>
