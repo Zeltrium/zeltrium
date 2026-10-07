@@ -4,23 +4,34 @@
    free-pack form posting the email to MailerLite. */
 document.querySelectorAll('.year').forEach(el => el.textContent = new Date().getFullYear());
 let ANIMS = null, SIZES = {};
-const NAMES = {like:'Like',toggle:'Toggle',send:'Send',delete:'Delete',notification:'Notification',menu_close:'Menu',download:'Download',favorite:'Favorite',bookmark:'Bookmark',theme:'Theme',add:'Add',visibility:'Visibility',lock:'Lock',upload:'Upload',success:'Success',error:'Error',warning:'Warning',info:'Info',help:'Help',copy:'Copy',edit:'Edit',share:'Share',search:'Search',filter:'Filter',settings:'Settings',refresh:'Refresh',checkbox:'Checkbox',radio_button:'Radio',play_pause:'Play / Pause',expand_collapse:'Expand'};
-const ORDER = Object.keys(NAMES);
+const NAMES = {success:'Success',error:'Error',warning:'Warning',info:'Info',help:'Help',notification:'Notification',
+  download:'Download',upload:'Upload',send:'Send',copy:'Copy',share:'Share',
+  add:'Add',edit:'Edit',delete:'Delete',refresh:'Refresh',search:'Search',filter:'Filter',
+  toggle:'Toggle',checkbox:'Checkbox',radio_button:'Radio',play_pause:'Play / Pause',visibility:'Visibility',lock:'Lock',
+  menu_close:'Menu',expand_collapse:'Expand',settings:'Settings',theme:'Theme',
+  like:'Like',favorite:'Favorite',bookmark:'Bookmark'};
+// the pack's six categories, in the README's order
+const CATS = [
+  ['Feedback', ['success','error','warning','info','help','notification']],
+  ['Transfer', ['download','upload','send','copy','share']],
+  ['Actions', ['add','edit','delete','refresh','search','filter']],
+  ['Controls', ['toggle','checkbox','radio_button','play_pause','visibility','lock']],
+  ['Navigation & View', ['menu_close','expand_collapse','settings','theme']],
+  ['Reactions', ['like','favorite','bookmark']]
+];
+const ORDER = CATS.flatMap(c => c[1]);
 const HERO = ['like','toggle','theme','send','add','notification','download','favorite'];
 const FREE = ['success','error','copy','checkbox','refresh'];
 
 // How each file behaves (the same rules as the pack README):
 // two  — repeatable state switch (rest at frame 0, play forward = on, play backward = off)
 // draw — finishing: draws in from nothing (rest at the last frame, replay from empty)
-// seg  — two markers: play the first, hold, play the second back to rest (copy → reset, send → return)
 // fade — download / upload: press → progress → done, rest on done, crossfade back to frame 0 after a hold
-// once — one shot that ends where it started (rest at frame 0, replay directly)
+// once — one shot that ends where it started (rest at frame 0, replay directly; copy and send play both markers straight through)
 const KIND = {};
 ['like','favorite','bookmark','add','theme','toggle','checkbox','radio_button','menu_close','play_pause','expand_collapse','visibility','lock','filter'].forEach(k => KIND[k] = 'two');
 ['success','error','warning'].forEach(k => KIND[k] = 'draw');
-['copy','send'].forEach(k => KIND[k] = 'seg');
 ['download','upload'].forEach(k => KIND[k] = 'fade');
-const SEG_HOLD = {copy: 1300, send: 450};
 ORDER.forEach(k => { KIND[k] = KIND[k] || 'once'; });
 const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
 let paused = false;
@@ -66,14 +77,9 @@ function whenReady(anim, fn){ if (anim.isLoaded) fn(); else anim.addEventListene
 function player(el, key, opts = {}){
   const data = recolor(key, opts.map);
   const anim = lottie.loadAnimation({container:el, renderer:'svg', loop:false, autoplay:false, animationData:data});
-  const p = {el, key, anim, kind:KIND[key], on:false, atEnd:false, auto:!!opts.auto && !reduce, visible:true, timer:null, offset:opts.offset || 0, stage:0,
-    marks:(data.markers || []).map(m => [m.tm, m.tm + m.dr])};
+  const p = {el, key, anim, kind:KIND[key], on:false, atEnd:false, auto:!!opts.auto && !reduce, visible:true, timer:null, offset:opts.offset || 0};
   whenReady(anim, () => anim.goToAndStop(restFrame(p), true));
   anim.addEventListener('complete', () => {
-    if (p.kind === 'seg' && p.stage === 1) { // first marker done: hold, then play the second back to rest
-      p.stage = 2; p.segTimer = setTimeout(() => anim.playSegments(p.marks[1], true), SEG_HOLD[p.key] || 800); return;
-    }
-    if (p.kind === 'seg') { p.stage = 0; anim.resetSegments(true); anim.goToAndStop(0, true); }
     p.atEnd = true;
     let next = hold();
     if (p.kind === 'fade' && p.auto) { setTimeout(() => crossTo(p, 0), next); next += 700; }
@@ -93,10 +99,6 @@ function play(p){
     p.on = !p.on; return;
   }
   a.setDirection(1);
-  if (p.kind === 'seg') {
-    if (p.stage) return; // already running
-    p.stage = 1; p.atEnd = false; a.playSegments(p.marks[0], true); return;
-  }
   if (p.kind === 'draw') { crossTo(p, 0, () => a.play()); return; }
   if (p.kind === 'fade' && p.atEnd) { crossTo(p, 0, () => setTimeout(() => a.play(), 250)); return; }
   p.atEnd = false; a.goToAndPlay(0, true);
@@ -181,9 +183,19 @@ if (reduce) mb.disabled = true;
 mb.addEventListener('click', () => { paused = !paused; mb.setAttribute('aria-pressed', String(paused)); mb.textContent = paused ? 'Play motion' : 'Pause motion'; });
 hint.appendChild(mb); hg.appendChild(hint);
 
-// full pack
+// full pack, with a category filter
 const pg = document.getElementById('pack-grid');
-ORDER.forEach((k, i) => pg.appendChild(tile(k, i % 6, true).b));
+const packTiles = ORDER.map((k, i) => { const t = tile(k, i % 6, true); t.b.dataset.key = k; pg.appendChild(t.b); return t; });
+const cf = document.getElementById('cat-filter');
+[['All', ORDER]].concat(CATS).forEach(([name, keys], i) => {
+  const c = document.createElement('button'); c.type = 'button'; c.className = 'chip'; c.setAttribute('aria-pressed', i === 0 ? 'true' : 'false');
+  c.innerHTML = name + ' <span>' + keys.length + '</span>';
+  c.addEventListener('click', () => {
+    cf.querySelectorAll('.chip').forEach(x => x.setAttribute('aria-pressed', 'false')); c.setAttribute('aria-pressed', 'true');
+    packTiles.forEach(t => { const show = keys.includes(t.b.dataset.key); t.b.hidden = !show; t.p.visible = show; });
+  });
+  cf.appendChild(c);
+});
 
 // free five
 const fr = document.getElementById('free-row');
@@ -228,7 +240,7 @@ pre.innerHTML = SNIPS.React;
 const copyP = player(document.getElementById('copy-anim'), 'copy');
 document.getElementById('copy-btn').addEventListener('click', () => {
   const label = document.getElementById('copy-label');
-  const done = () => { play(copyP); label.textContent = 'Copied'; setTimeout(() => label.textContent = 'Copy', 1500); };
+  const done = () => { play(copyP); label.textContent = 'Copied'; setTimeout(() => label.textContent = 'Copy', 1400); };
   const fallback = () => { const r = document.createRange(); r.selectNodeContents(pre); const s = getSelection(); s.removeAllRanges(); s.addRange(r); label.textContent = 'Selected'; };
   try { navigator.clipboard.writeText(pre.textContent).then(done, fallback); } catch (e) { fallback(); }
 });
