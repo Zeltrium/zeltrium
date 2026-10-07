@@ -27,7 +27,7 @@
 <meta name="twitter:description" content="30 drop-in Lottie micro-interactions for indie products. 5 free, all 30 for $29.">
 <meta name="twitter:image" content="https://zeltrium.com/assets/icons/og-image.png">
 
-<link rel="preload" href="assets/fonts/syne-800.woff" as="font" type="font/woff" crossorigin>
+<link rel="preload" href="assets/fonts/bricolage-700.woff" as="font" type="font/woff" crossorigin>
 <link rel="preload" href="assets/fonts/onest-var.woff" as="font" type="font/woff" crossorigin>
 <link rel="stylesheet" href="styles.css">
 </head>
@@ -55,7 +55,7 @@
         <a class="btn btn-primary" href="#free">Get 5 free</a>
         <a class="btn btn-ghost" href="#product">Get all 30 — $29</a>
       </div>
-      <p class="trust">Made by a motion designer for indie makers. Commercial license, files from 1.3 KB.</p>
+      <p class="trust">Made by a motion designer for indie makers. Light and dark sets, commercial license, files from 1 KB.</p>
     </div>
     <div class="hero-grid" id="hero-grid" aria-label="Animation previews"></div>
   </div>
@@ -74,7 +74,7 @@
         <div class="row"><div><div class="t">Message</div><div class="s">Ready to send</div></div><span class="send-btn static">Send <span class="anim" data-static="send"></span></span></div>
       </div>
       <div class="panel live">
-        <div class="tag"><span>With Zeltrium</span><span>+ 14.4 KB</span></div>
+        <div class="tag"><span>With Zeltrium</span><span>+ 10.7 KB</span></div>
         <div class="row"><div><div class="t">Push notifications</div><div class="s">New replies and mentions</div></div><button class="ctl wide" type="button" aria-label="Toggle notifications" data-live="toggle"><span class="anim"></span></button></div>
         <div class="row"><div><div class="t">Save to favorites</div><div class="s">Launch checklist.md</div></div><button class="ctl" type="button" aria-label="Like" data-live="like"><span class="anim"></span></button></div>
         <div class="row"><div><div class="t">Message</div><div class="s">Ready to send</div></div><button class="send-btn" type="button" data-live="send">Send <span class="anim"></span></button></div>
@@ -86,10 +86,10 @@
     <div class="sec-head">
       <span class="eyebrow">The pack</span>
       <h2 id="pack-h">30 moments every interface needs.</h2>
-      <p class="lead">Likes, toggles, uploads, errors, menus. Click any tile to play it. Toggles switch both ways, like in a real UI.</p>
+      <p class="lead">Likes, toggles, theme, uploads, errors, menus. Click any tile to play it. Toggles switch both ways, like in a real UI. Drawn on the Lucide grid, so they sit next to the icons you already use.</p>
     </div>
     <div class="pack-grid" id="pack-grid"></div>
-    <div class="pack-meta"><span><b>30</b> animations</span><span><b>232 KB</b> in total</span><span><b>1.3–17 KB</b> per file</span><span><b>30 fps</b></span><span><b>JSON + .lottie</b></span></div>
+    <div class="pack-meta"><span><b>30</b> animations</span><span><b>166 KB</b> in total</span><span><b>1–18 KB</b> per file</span><span><b>30 fps</b></span><span><b>JSON + .lottie</b></span><span><b>Light &amp; dark</b> ready</span></div>
   </section>
 
   <section id="code" aria-labelledby="code-h">
@@ -108,10 +108,12 @@
       </div>
       <div class="facts">
         <div class="fact"><span>Formats</span><b>.json · .lottie</b></div>
-        <div class="fact"><span>File size</span><b>1.3–17 KB</b></div>
+        <div class="fact"><span>File size</span><b>1–18 KB</b></div>
         <div class="fact"><span>Frame rate</span><b>30 fps</b></div>
-        <div class="fact"><span>Duration</span><b>0.3–2 s</b></div>
+        <div class="fact"><span>Duration</span><b>0.27–0.87 s</b></div>
         <div class="fact"><span>Canvas</span><b>400 × 400</b></div>
+        <div class="fact"><span>Stroke</span><b>2 px at 24 px</b></div>
+        <div class="fact"><span>Color sets</span><b>Light &amp; dark</b></div>
         <div class="fact"><span>After Effects needed</span><b>No</b></div>
       </div>
     </div>
@@ -123,7 +125,7 @@
         <div class="sec-head" style="margin-bottom:0">
           <span class="eyebrow">Your colors</span>
           <h2 id="recolor-h">Matches your brand, not ours.</h2>
-          <p class="lead">Every animation uses flat colors, so a recolor is one value per color. Pick one and watch.</p>
+          <p class="lead">Every color has one of four roles: line, accent, progress track, off control. A recolor is one value per role. Pick one and watch.</p>
         </div>
         <div class="swatches" id="swatches"></div>
       </div>
@@ -160,7 +162,7 @@
         <div class="sent" id="sent" hidden>
           <span class="anim" id="sent-anim"></span>
           <h3>Your pack is ready.</h3>
-          <a class="btn btn-primary" href="downloads/zeltrium-free-5.zip" download>Download the free 5 (.zip, 14 KB)</a>
+          <a class="btn btn-primary" href="downloads/zeltrium-free-5.zip" download>Download the free 5 (.zip, 23 KB)</a>
           <p>One more thing: we sent a confirmation email to <b id="sent-to"></b>. Click the button in it to get new packs first. Nothing there? Look in Spam or Promotions.</p>
           <button class="btn btn-ghost" type="button" id="reset-form">Use another email</button>
         </div>
@@ -179,9 +181,9 @@
         <h3 style="font-size:28px">30 Animated UI Micro-Interactions</h3>
         <div class="price"><b>$29</b><span>one-time · less than one custom animation</span></div>
         <ul class="incl">
-          <li>30 Lottie animations, .json and .lottie</li>
-          <li>Flat colors, easy to recolor to your brand</li>
-          <li>On/off states for toggles, likes, bookmarks, menus</li>
+          <li>30 Lottie animations, .json and .lottie, light and dark sets</li>
+          <li>Four color roles, recolor to your brand in a minute</li>
+          <li>On/off states for toggles, likes, theme, menus; markers for download, upload, copy and send</li>
           <li>Snippets for React, Swift, Android, Flutter, Framer, Webflow</li>
           <li>Commercial license for unlimited projects, client work included · <a href="license.html">terms</a></li>
           <li>14-day refund, no questions asked</li>
@@ -195,9 +197,11 @@
   <section id="faq" aria-labelledby="faq-h">
     <div class="sec-head"><span class="eyebrow">Questions</span><h2 id="faq-h">Before you ask.</h2></div>
     <div class="faq">
-      <details><summary>What formats do I get?</summary><p>Every animation comes as a Lottie .json file and as .lottie, the compressed format. Same animation, pick what your player prefers.</p></details>
+      <details><summary>What formats do I get?</summary><p>Every animation comes as a Lottie .json file and as .lottie, the compressed format, in two color sets: dark (light lines for dark UIs) and light (dark lines for light UIs). Same animation, pick what your player and your background prefer. Files are 1–18 KB, durations 0.27–0.87 s.</p></details>
+      <details><summary>Will they work on light and dark backgrounds?</summary><p>Yes. Both sets ship in the pack, and the accent stays the same in both. If your app switches themes, load the matching file.</p></details>
+      <details><summary>Will they match my icons?</summary><p>They are drawn on the Lucide grid with a 2 px stroke at 24 px, so they sit next to Lucide, Heroicons or Tabler without looking borrowed. Built for 16–48 px.</p></details>
       <details><summary>Where do they work?</summary><p>Anywhere Lottie plays: the web (lottie-web, dotLottie), React and React Native, iOS, Android, Flutter, Framer and Webflow.</p></details>
-      <details><summary>Can I change the colors?</summary><p>Yes. Colors are flat fills and strokes, so you can recolor them in a Lottie editor, in After Effects, or in code by swapping one value per color.</p></details>
+      <details><summary>Can I change the colors?</summary><p>Yes. Every color is flat and has one of four roles: line, accent, progress track and off control. Swap one value per role in a Lottie editor, in After Effects, or in code.</p></details>
       <details><summary>Can I use them in client and commercial work?</summary><p>Yes. Use them in unlimited personal, commercial and client projects, no attribution needed. You can't resell or redistribute the files themselves. <a href="license.html">Read the license</a>.</p></details>
       <details><summary>What if it's not for me?</summary><p>Email <a href="mailto:zeltriumstudio@gmail.com">zeltriumstudio@gmail.com</a> within 14 days of purchase and you get a full refund. No questions asked.</p></details>
       <details><summary>Are more packs coming?</summary><p>Yes. UI States is next: loading, success, error, empty and offline screens. Get the free 5 and you'll hear about it first.</p></details>
