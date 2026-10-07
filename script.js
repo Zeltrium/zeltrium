@@ -1,61 +1,57 @@
 /* Zeltrium — page behaviour.
-   Animations: assets/lottie/preview.dat (all 30 in brand colors, one request), played with lottie_light (MIT).
+   Animations: assets/lottie/preview.dat (all 30 from the pack's dark set, one request), played with lottie_light (MIT).
    No cookies, no analytics, no third-party scripts. The only outside request is the
    free-pack form posting the email to MailerLite. */
 document.querySelectorAll('.year').forEach(el => el.textContent = new Date().getFullYear());
 let ANIMS = null, SIZES = {};
-const NAMES = {like:'Like',toggle:'Toggle',send:'Send',delete:'Delete',notification:'Notification',menu_close:'Menu',download:'Download',favorite:'Favorite',bookmark:'Bookmark',visibility:'Visibility',lock:'Lock',upload:'Upload',success:'Success',error:'Error',warning:'Warning',info:'Info',help:'Help',copy:'Copy',edit:'Edit',share:'Share',search:'Search',filter:'Filter',settings:'Settings',refresh:'Refresh',checkbox:'Checkbox',radio_button:'Radio',play_pause:'Play / Pause',expand_collapse:'Expand',progress_circular:'Progress',progress_linear:'Progress bar'};
+const NAMES = {like:'Like',toggle:'Toggle',send:'Send',delete:'Delete',notification:'Notification',menu_close:'Menu',download:'Download',favorite:'Favorite',bookmark:'Bookmark',theme:'Theme',add:'Add',visibility:'Visibility',lock:'Lock',upload:'Upload',success:'Success',error:'Error',warning:'Warning',info:'Info',help:'Help',copy:'Copy',edit:'Edit',share:'Share',search:'Search',filter:'Filter',settings:'Settings',refresh:'Refresh',checkbox:'Checkbox',radio_button:'Radio',play_pause:'Play / Pause',expand_collapse:'Expand'};
 const ORDER = Object.keys(NAMES);
-const HERO = ['like','toggle','send','delete','notification','menu_close','download','favorite'];
+const HERO = ['like','toggle','theme','send','add','notification','download','favorite'];
 const FREE = ['success','error','copy','checkbox','refresh'];
 
-// How each file behaves, read from its own keyframes:
-// two  — a state switch (rest at frame 0, play forward = on, play backward = off)
-// exit — the icon leaves at the end (rest at frame 0, after the end wait 0.5 s and fade back in)
-// draw — the icon draws itself in from nothing (rest at the last frame, replay from empty)
-// fade — ends in a different state (rest at frame 0, crossfade back after a hold)
-// once — ends where it started (rest at frame 0, replay directly)
+// How each file behaves (the same rules as the pack README):
+// two  — repeatable state switch (rest at frame 0, play forward = on, play backward = off)
+// draw — finishing: draws in from nothing (rest at the last frame, replay from empty)
+// seg  — two markers: play the first, hold, play the second back to rest (copy → reset, send → return)
+// fade — download / upload: press → progress → done, rest on done, crossfade back to frame 0 after a hold
+// once — one shot that ends where it started (rest at frame 0, replay directly)
 const KIND = {};
-['like','favorite','bookmark','toggle','checkbox','radio_button','menu_close','play_pause','expand_collapse','visibility','lock','filter'].forEach(k => KIND[k] = 'two');
-['send','delete'].forEach(k => KIND[k] = 'exit');
-['success','error','warning','info','help'].forEach(k => KIND[k] = 'draw');
-['download','upload','progress_circular','progress_linear','copy'].forEach(k => KIND[k] = 'fade');
+['like','favorite','bookmark','add','theme','toggle','checkbox','radio_button','menu_close','play_pause','expand_collapse','visibility','lock','filter'].forEach(k => KIND[k] = 'two');
+['success','error','warning'].forEach(k => KIND[k] = 'draw');
+['copy','send'].forEach(k => KIND[k] = 'seg');
+['download','upload'].forEach(k => KIND[k] = 'fade');
+const SEG_HOLD = {copy: 1300, send: 450};
 ORDER.forEach(k => { KIND[k] = KIND[k] || 'once'; });
 const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
 let paused = false;
 
-// Previews ship already in brand colors: outlines Paper, the "moment" Signal (like, favorite and bookmark fully Signal).
-// The recolor demo swaps those two for the picked color; track, knob and dark details stay.
-const BRAND = ['#F2F1ED', '#FF4A1C'], KNOB = '#F2F1EE';
+// Previews are the pack's dark set. Every color has one of four roles, so a recolor maps role → value.
+const ROLE = {line:'#F2F1ED', accent:'#FF4A1C', track:'#2C2C2A', off:'#6B6A65'};
+const SET = {
+  dark:  {},
+  light: {line:'#121212', track:'#E4E2DC', off:'#8A8983'}   // the pack's light set
+};
 const rgb = h => [parseInt(h.slice(1,3),16)/255, parseInt(h.slice(3,5),16)/255, parseInt(h.slice(5,7),16)/255];
 const hexOf = k => '#' + k.slice(0,3).map(v => Math.round(v*255).toString(16).padStart(2,'0')).join('').toUpperCase();
-function recolor(key, mode){
+function recolor(key, map){
   const data = JSON.parse(JSON.stringify(ANIMS[key]));
-  if (mode === 'brand') return data;
-  if (mode === 'onlight') { // light card: outlines go dark, the Signal accent stays
-    (function walk(o){ if (Array.isArray(o)) { o.forEach(walk); return; } if (!o || typeof o !== 'object') return;
-      if ((o.ty === 'fl' || o.ty === 'st') && o.c && o.c.a === 0 && hexOf(o.c.k) === '#F2F1ED') o.c.k = [...rgb('#0E0E0E'), o.c.k[3] ?? 1];
-      for (const v in o) walk(o[v]); })(data);
-    return data;
-  }
-  const [r, g, b] = rgb(mode), light = 0.2126 * r + 0.7152 * g + 0.0722 * b > 0.6;
+  if (!map || !Object.keys(map).length) return data;
+  const swap = {};
+  for (const r in map) swap[ROLE[r]] = rgb(map[r]);
+  const fix = c => { const to = swap[hexOf(c)]; return to ? [...to, c[3] ?? 1] : c; };
   (function walk(o){
     if (Array.isArray(o)) { o.forEach(walk); return; }
     if (!o || typeof o !== 'object') return;
-    if ((o.ty === 'fl' || o.ty === 'st') && o.c && o.c.a === 0) {
-      const h = hexOf(o.c.k);
-      if (BRAND.includes(h)) o.c.k = [...rgb(mode), o.c.k[3] ?? 1];
-      // on a light color the "on" track turns light too, so the knob goes from light (off) to dark (on)
-      else if (h === KNOB && light) o.c = {a:1, k:[ // knob fades light → dark as the track fills
-        {t:0, s:[...rgb('#F2F1ED'), 1], i:{x:[0.4], y:[1]}, o:{x:[0.6], y:[0]}},
-        {t:8, s:[...rgb('#0E0E0E'), 1]}]};
+    if ((o.ty === 'fl' || o.ty === 'st') && o.c) {
+      if (o.c.a === 0) o.c.k = fix(o.c.k);
+      else if (Array.isArray(o.c.k)) o.c.k.forEach(kf => { if (kf.s) kf.s = fix(kf.s); if (kf.e) kf.e = fix(kf.e); });
     }
     for (const v in o) walk(o[v]);
   })(data);
   return data;
 }
 
-// Size each animation by its own canvas so circles match across files (error is 500×400 because of its shake).
+// Size each animation by its own canvas so circles match across files (lock and delete are 500×400, toggle 400×200).
 function size(el, key, base){
   const a = ANIMS[key].w / ANIMS[key].h;
   if (a <= 1.3) { el.style.height = base + '%'; el.style.width = (base * a) + '%'; }
@@ -68,22 +64,23 @@ function restFrame(p){ return p.kind === 'draw' ? p.anim.totalFrames - 1 : 0; }
 function whenReady(anim, fn){ if (anim.isLoaded) fn(); else anim.addEventListener('DOMLoaded', fn); }
 
 function player(el, key, opts = {}){
-  const anim = lottie.loadAnimation({container:el, renderer:'svg', loop:false, autoplay:false, animationData:recolor(key, opts.mode || 'brand')});
-  const p = {el, key, anim, kind:KIND[key], on:false, atEnd:false, auto:!!opts.auto && !reduce, visible:true, timer:null, offset:opts.offset || 0};
+  const data = recolor(key, opts.map);
+  const anim = lottie.loadAnimation({container:el, renderer:'svg', loop:false, autoplay:false, animationData:data});
+  const p = {el, key, anim, kind:KIND[key], on:false, atEnd:false, auto:!!opts.auto && !reduce, visible:true, timer:null, offset:opts.offset || 0, stage:0,
+    marks:(data.markers || []).map(m => [m.tm, m.tm + m.dr])};
   whenReady(anim, () => anim.goToAndStop(restFrame(p), true));
   anim.addEventListener('complete', () => {
+    if (p.kind === 'seg' && p.stage === 1) { // first marker done: hold, then play the second back to rest
+      p.stage = 2; p.segTimer = setTimeout(() => anim.playSegments(p.marks[1], true), SEG_HOLD[p.key] || 800); return;
+    }
+    if (p.kind === 'seg') { p.stage = 0; anim.resetSegments(true); anim.goToAndStop(0, true); }
     p.atEnd = true;
     let next = hold();
-    if (p.kind === 'exit') { setTimeout(() => reappear(p), 500); next += 900; }
     if (p.kind === 'fade' && p.auto) { setTimeout(() => crossTo(p, 0), next); next += 700; }
     if (p.auto) p.timer = setTimeout(() => tick(p), next);
   });
   players.push(p);
   return p;
-}
-function reappear(p){
-  p.el.classList.add('hide'); p.anim.goToAndStop(0, true); p.atEnd = false;
-  void p.el.offsetWidth; p.el.classList.remove('hide');
 }
 function crossTo(p, frame, then){
   p.el.classList.add('out');
@@ -96,6 +93,10 @@ function play(p){
     p.on = !p.on; return;
   }
   a.setDirection(1);
+  if (p.kind === 'seg') {
+    if (p.stage) return; // already running
+    p.stage = 1; p.atEnd = false; a.playSegments(p.marks[0], true); return;
+  }
   if (p.kind === 'draw') { crossTo(p, 0, () => a.play()); return; }
   if (p.kind === 'fade' && p.atEnd) { crossTo(p, 0, () => setTimeout(() => a.play(), 250)); return; }
   p.atEnd = false; a.goToAndPlay(0, true);
@@ -145,7 +146,7 @@ function tile(key, i, cap){
       await fetch(form.action, {method:'POST', body:data, mode:'no-cors'});
       document.getElementById('sent-to').textContent = value;
       form.hidden = true; sent.hidden = false;
-      if (window.lottie && window.ANIMS) { if (!sentP) sentP = player(document.getElementById('sent-anim'), 'success', {mode:'onlight'}); play(sentP); }
+      if (window.lottie && window.ANIMS) { if (!sentP) sentP = player(document.getElementById('sent-anim'), 'success', {map:SET.light}); play(sentP); }
     } catch (x) {
       err.textContent = 'Couldn\'t reach the mail server. Check your connection and try again, or email zeltriumstudio@gmail.com.';
       err.hidden = false;
@@ -209,7 +210,7 @@ baIO.observe(document.querySelector('.panel.live'));
 
 // code
 const SNIPS = {
-  React: '<span class="k">import</span> Lottie <span class="k">from</span> "lottie-react";\n<span class="k">import</span> like <span class="k">from</span> "./zeltrium/like.json";\n\n&lt;Lottie animationData={like} loop={false} /&gt;',
+  React: '<span class="k">import</span> Lottie <span class="k">from</span> "lottie-react";\n<span class="k">import</span> like <span class="k">from</span> "./zeltrium/json/dark/like.json";\n\n&lt;Lottie animationData={like} loop={false} /&gt;',
   Swift: '<span class="k">import</span> Lottie\n\n<span class="k">let</span> like = LottieAnimationView(name: "like")\nlike.play()',
   Android: '&lt;com.airbnb.lottie.LottieAnimationView\n    app:lottie_rawRes="@raw/like"\n    app:lottie_autoPlay="false" /&gt;',
   Flutter: '<span class="k">import</span> \'package:lottie/lottie.dart\';\n\nLottie.asset(\'assets/zeltrium/like.json\', repeat: false)',
@@ -227,37 +228,43 @@ pre.innerHTML = SNIPS.React;
 const copyP = player(document.getElementById('copy-anim'), 'copy');
 document.getElementById('copy-btn').addEventListener('click', () => {
   const label = document.getElementById('copy-label');
-  const done = () => { play(copyP); label.textContent = 'Copied'; setTimeout(() => label.textContent = 'Copy', 1600); };
+  const done = () => { play(copyP); label.textContent = 'Copied'; setTimeout(() => label.textContent = 'Copy', 1500); };
   const fallback = () => { const r = document.createRange(); r.selectNodeContents(pre); const s = getSelection(); s.removeAllRanges(); s.addRange(r); label.textContent = 'Selected'; };
   try { navigator.clipboard.writeText(pre.textContent).then(done, fallback); } catch (e) { fallback(); }
 });
 
-// recolor
-const SW = [['Zeltrium','brand','#FF4A1C'],['Ocean','#2F7DFD','#2F7DFD'],['Mint','#2FBF71','#2FBF71'],['Violet','#9364E4','#9364E4'],['Mono','#F2F1ED','#F2F1ED']];
-const RC = ['like','toggle','favorite','send'];
+// recolor: each swatch is a role map on top of the dark or light set
+const SW = [
+  ['Zeltrium', {}, '#FF4A1C'],
+  ['Ocean',  {accent:'#2F7DFD'}, '#2F7DFD'],
+  ['Mint',   {accent:'#2FBF71'}, '#2FBF71'],
+  ['Violet', {accent:'#9364E4'}, '#9364E4'],
+  ['Light',  Object.assign({}, SET.light), '#F2F1ED', true]
+];
+const RC = ['like','toggle','theme','success'];
 const rcGrid = document.getElementById('rc-grid');
 let rcPlayers = [];
-function buildRC(mode){
+function buildRC(map, light){
   rcPlayers.forEach(p => { takeOver(p); p.anim.destroy(); });
-  rcPlayers = []; rcGrid.innerHTML = '';
+  rcPlayers = []; rcGrid.innerHTML = ''; rcGrid.classList.toggle('on-light', !!light);
   RC.forEach((k, i) => {
     const b = document.createElement('button'); b.className = 'tile'; b.type = 'button'; b.setAttribute('aria-label', 'Play ' + NAMES[k]);
     const a = document.createElement('span'); a.className = 'anim'; size(a, k, 56); b.appendChild(a);
     const c = document.createElement('span'); c.className = 'cap'; c.innerHTML = '<b>' + NAMES[k] + '</b>'; b.appendChild(c);
     rcGrid.appendChild(b);
-    const p = player(a, k, {auto:true, mode, offset:150 + i * 220}); bind(b, p); start(p); rcPlayers.push(p);
+    const p = player(a, k, {auto:true, map, offset:150 + i * 220}); bind(b, p); start(p); rcPlayers.push(p);
   });
 }
 const swWrap = document.getElementById('swatches');
-SW.forEach(([name, mode, color], i) => {
+SW.forEach(([name, map, color, light], i) => {
   const s = document.createElement('button'); s.type = 'button'; s.className = 'sw'; s.setAttribute('aria-pressed', i === 0 ? 'true' : 'false');
   s.innerHTML = '<i style="background:' + color + '"></i>' + name;
-  s.addEventListener('click', () => { swWrap.querySelectorAll('.sw').forEach(x => x.setAttribute('aria-pressed', 'false')); s.setAttribute('aria-pressed', 'true'); buildRC(mode); });
+  s.addEventListener('click', () => { swWrap.querySelectorAll('.sw').forEach(x => x.setAttribute('aria-pressed', 'false')); s.setAttribute('aria-pressed', 'true'); buildRC(map, light); });
   swWrap.appendChild(s);
 });
 
 // start loops, pause what is off screen
 const io = new IntersectionObserver(es => es.forEach(e => { const p = players.find(x => x.el === e.target); if (p) p.visible = e.isIntersecting; }));
 players.forEach(p => { io.observe(p.el); if (p.auto && !p.timer) start(p); });
-buildRC('brand');
+buildRC({}, false);
 }

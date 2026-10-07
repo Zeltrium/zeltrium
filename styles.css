@@ -2,7 +2,7 @@
    Dark single theme. One accent (Signal #FF4A1C), warm neutrals.
    All fonts are self-hosted (SIL OFL, see assets/fonts). No third-party requests. */
 
-@font-face{font-family:'Syne';src:url('assets/fonts/syne-800.woff') format('woff');font-weight:800;font-style:normal;font-display:swap}
+@font-face{font-family:'Bricolage Grotesque';src:url('assets/fonts/bricolage-700.woff') format('woff');font-weight:700;font-style:normal;font-display:swap}
 @font-face{font-family:'Onest';src:url('assets/fonts/onest-var.woff') format('woff');font-weight:400 600;font-style:normal;font-display:swap}
 @font-face{font-family:'JetBrains Mono';src:url('assets/fonts/jetbrains-mono-400.woff') format('woff');font-weight:400;font-style:normal;font-display:swap}
 @font-face{font-family:'JetBrains Mono';src:url('assets/fonts/jetbrains-mono-500.woff') format('woff');font-weight:500;font-style:normal;font-display:swap}
@@ -10,7 +10,7 @@
 :root{
   --night:#0E0E0E; --surface:#1A1A19; --surface-2:#222220; --line:#2C2C2A;
   --paper:#F2F1ED; --muted:#8A8983; --soft:#B9B7B0; --signal:#FF4A1C; --signal-hover:#FF6A42; --error:#E5484D;
-  --display:'Syne','Arial Black',system-ui,sans-serif;
+  --display:'Bricolage Grotesque','Arial Black',system-ui,sans-serif;
   --body:'Onest',system-ui,-apple-system,'Segoe UI',sans-serif;
   --mono:'JetBrains Mono',ui-monospace,'SF Mono',Menlo,monospace;
   --r-tile:18px; --r-ctl:12px;
@@ -24,7 +24,7 @@ body{margin:0;font-family:var(--body);font-size:16px;line-height:1.55;padding-in
 a{color:inherit}
 img{max-width:100%}
 .wrap{max-width:1180px;margin-inline:auto}
-h1,h2,h3{font-family:var(--display);font-weight:800;letter-spacing:-0.035em;line-height:1.02;margin:0;text-wrap:balance}
+h1,h2,h3{font-family:var(--display);font-weight:700;letter-spacing:-0.02em;line-height:1.02;margin:0;text-wrap:balance}
 h2{font-size:clamp(32px,4.4vw,52px)}
 p{margin:0}
 [hidden]{display:none!important}
@@ -128,6 +128,10 @@ pre .k{color:var(--signal)} pre .c{color:var(--muted)}
 .sw i{width:30px;height:30px;border-radius:50%;display:block}
 .sw[aria-pressed="true"]{border-color:var(--paper)}
 .rc-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}
+.rc-grid.on-light .tile{background:var(--paper);border-color:#CFCCC4}
+.rc-grid.on-light .tile:hover{background:#E9E7E1;border-color:#B9B7B0}
+.rc-grid.on-light .tile .cap b{color:#5E5D58}
+.sw i{box-shadow:inset 0 0 0 1px rgba(255,255,255,.12)}
 @media (max-width:560px){.rc-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
 
 /* free */
@@ -159,7 +163,7 @@ pre .k{color:var(--signal)} pre .c{color:var(--muted)}
 .prod-visual .mini{aspect-ratio:1;border-radius:10px;background:var(--night);display:flex;align-items:center;justify-content:center}
 .prod-card{border:1px solid var(--line);border-radius:24px;padding:32px;display:flex;flex-direction:column;gap:22px}
 .price{display:flex;align-items:baseline;flex-wrap:wrap;gap:4px 12px}
-.price b{font-family:var(--display);font-size:64px;letter-spacing:-.04em;line-height:1}
+.price b{font-family:var(--display);font-weight:700;font-size:64px;letter-spacing:-.02em;line-height:1}
 .price span{color:var(--muted)}
 .incl{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:12px}
 .incl li{display:flex;gap:12px;align-items:baseline}
