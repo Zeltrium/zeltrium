@@ -126,6 +126,23 @@ function tile(key, i, cap){
   return {b, p};
 }
 
+// where the visitor came from: ?ref= label from our own links, else the referring site's domain.
+// Sent to MailerLite as the subscriber's "source" field; nothing is stored in the browser.
+const SOURCE = (() => {
+  const known = {'t.co':'x','x.com':'x','twitter.com':'x','reddit.com':'reddit','indiehackers.com':'ih','dev.to':'devto',
+    'lottiefiles.com':'lottiefiles','framer.com':'framer','iconscout.com':'is','gumroad.com':'gumroad','mailerlite.com':'email',
+    'google.com':'search','bing.com':'search','duckduckgo.com':'search','github.com':'github','linkedin.com':'linkedin'};
+  let ref = '';
+  try { ref = (new URLSearchParams(location.search).get('ref') || '').toLowerCase().replace(/[^a-z0-9_-]/g, '').slice(0, 30); } catch (_) {}
+  if (ref) return ref;
+  let host = '';
+  try { host = document.referrer ? new URL(document.referrer).hostname.replace(/^www\./, '') : ''; } catch (_) {}
+  if (!host) return 'direct';
+  if (host === location.hostname.replace(/^www\./, '')) return '';
+  const hit = Object.keys(known).find(k => host === k || host.endsWith('.' + k));
+  return hit ? known[hit] : host.slice(0, 60);
+})();
+
 // free-pack form → MailerLite (double opt-in is switched on in MailerLite)
 (function(){
   const form = document.getElementById('free-form'), email = document.getElementById('email'), err = document.getElementById('email-err');
@@ -142,6 +159,7 @@ function tile(key, i, cap){
     submit.disabled = true; submit.textContent = 'Sending…';
     const data = new FormData();
     data.append('fields[email]', value);
+    if (SOURCE) data.append('fields[source]', SOURCE);
     data.append('ml-submit', '1');
     data.append('anticsrf', 'true');
     try {
