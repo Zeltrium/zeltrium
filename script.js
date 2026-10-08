@@ -127,7 +127,7 @@ function tile(key, i, cap){
 }
 
 // where the visitor came from: ?ref= label from our own links, else the referring site's domain.
-// Sent to MailerLite as the subscriber's "source" field; nothing is stored in the browser.
+// Sent to MailerLite as the subscriber's "channel" field; nothing is stored in the browser.
 const SOURCE = (() => {
   const known = {'t.co':'x','x.com':'x','twitter.com':'x','reddit.com':'reddit','indiehackers.com':'ih','dev.to':'devto',
     'lottiefiles.com':'lottiefiles','framer.com':'framer','iconscout.com':'is','gumroad.com':'gumroad','mailerlite.com':'email',
@@ -159,7 +159,7 @@ const SOURCE = (() => {
     submit.disabled = true; submit.textContent = 'Sending…';
     const data = new FormData();
     data.append('fields[email]', value);
-    if (SOURCE) data.append('fields[source]', SOURCE);
+    if (SOURCE) data.append('fields[channel]', SOURCE);
     data.append('ml-submit', '1');
     data.append('anticsrf', 'true');
     try {
