@@ -39,6 +39,7 @@
     <nav class="nav" aria-label="Main">
       <a class="hide-m" href="#pack">Pack</a>
       <a class="hide-m" href="#free">Free 5</a>
+      <a class="hide-m" href="#ai">AI states</a>
       <a class="hide-m" href="#custom">Custom</a>
       <a class="hide-m" href="#faq">FAQ</a>
       <a class="btn btn-primary" href="https://zeltrium.gumroad.com/l/lottie-ui-micro-interactions" target="_blank" rel="noopener">Get all 30 — $29</a>
@@ -49,6 +50,7 @@
 <main class="wrap" id="main">
   <div class="hero" id="top">
     <div class="hero-copy">
+      <a class="pill" href="#ai"><b>New</b> 5 free AI states <span aria-hidden="true">→</span></a>
       <h1>Make your product feel <em>alive.</em></h1>
       <p class="lead">30 drop-in Lottie micro-interactions for React, Swift, Android, Flutter, Framer and Webflow. Copy three lines, ship today.</p>
       <div class="cta">
@@ -149,24 +151,24 @@
         <form id="free-form" action="https://assets.mailerlite.com/jsonp/2681403/forms/200318522151143170/subscribe" method="post" novalidate>
           <div class="form-stack">
             <h3>Get the free 5</h3>
-            <label for="email">Email</label>
+            <label for="free-email">Email</label>
             <div class="field">
-              <input id="email" name="fields[email]" type="email" autocomplete="email" placeholder="you@yourproduct.com" aria-describedby="email-err" required>
+              <input id="free-email" name="fields[email]" type="email" autocomplete="email" placeholder="you@yourproduct.com" aria-describedby="free-email-err" required>
               <button class="btn btn-primary" type="submit" id="free-submit">Send me the pack</button>
             </div>
             <div class="hp" aria-hidden="true"><label for="website">Leave this empty</label><input id="website" name="website" type="text" tabindex="-1" autocomplete="off"></div>
             <input type="hidden" name="ml-submit" value="1">
             <input type="hidden" name="anticsrf" value="true">
-            <p class="err" id="email-err" role="alert" hidden>Enter an email like you@domain.com.</p>
+            <p class="err" id="free-email-err" role="alert" hidden>Enter an email like you@domain.com.</p>
             <p class="fine">You get the download right here. We also send you one email to confirm your address. Confirm it to get the pack by email and the occasional note about new packs. Unsubscribe anytime. <a href="privacy.html#newsletter">Privacy policy</a></p>
           </div>
         </form>
-        <div class="sent" id="sent" hidden>
-          <span class="anim" id="sent-anim"></span>
+        <div class="sent" id="free-sent" hidden>
+          <span class="anim" id="free-sent-anim"></span>
           <h3>Your pack is ready.</h3>
           <a class="btn btn-primary" href="downloads/zeltrium-free-5.zip" download>Download the free 5 (.zip, 23 KB)</a>
-          <p>One more thing: we sent a confirmation email to <b id="sent-to"></b>. Click the button in it to get new packs first. Nothing there? Look in Spam or Promotions.</p>
-          <button class="btn btn-ghost" type="button" id="reset-form">Use another email</button>
+          <p>One more thing: we sent a confirmation email to <b id="free-sent-to"></b>. Click the button in it to get new packs first. Nothing there? Look in Spam or Promotions.</p>
+          <button class="btn btn-ghost" type="button" id="free-reset">Use another email</button>
         </div>
       </div>
     </div>
@@ -194,6 +196,52 @@
         <p class="trust">Checkout and payment run on Gumroad. Instant download.</p>
       </div>
     </div>
+  </section>
+
+  <section id="ai" aria-labelledby="ai-h">
+    <div class="sec-head">
+      <span class="eyebrow">New · free</span>
+      <h2 id="ai-h">5 AI states, free.</h2>
+      <p class="lead">Thinking, typing, send → stop, listening and searching. The moments every AI product has, drawn on the same grid as the pack.</p>
+    </div>
+    <div class="ai">
+      <div class="chat" id="chat" aria-label="Demo chat with the five AI states">
+        <div class="chat-top"><span class="eyebrow">Demo chat</span><span class="eyebrow chat-hint">tap send or the mic</span></div>
+        <div class="chat-log" id="chat-log" aria-live="off"></div>
+        <div class="composer">
+          <div class="composer-text" id="composer-text"><span class="ph">Ask anything</span></div>
+          <button class="ai-btn" type="button" id="mic-btn" aria-label="Voice input">
+            <svg class="mic-static" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3a3 3 0 0 0-3 3v5a3 3 0 0 0 6 0V6a3 3 0 0 0-3-3Z"/><path d="M19 10v1a7 7 0 0 1-14 0v-1M12 18v3"/></svg>
+            <span class="anim" id="mic-anim"></span>
+          </button>
+          <button class="ai-btn send" type="button" id="send-btn" aria-label="Send"><span class="anim" id="send-anim"></span></button>
+        </div>
+      </div>
+      <div class="form-card">
+        <form id="ai-form" action="https://assets.mailerlite.com/jsonp/2681403/forms/AI_FORM_ID/subscribe" method="post" novalidate>
+          <div class="form-stack">
+            <h3>Get the 5 AI states</h3>
+            <p class="form-sub">Light and dark sets, .json and .lottie, markers for in, loop and out. Same license as the pack.</p>
+            <label for="ai-email">Email</label>
+            <div class="field">
+              <input id="ai-email" name="fields[email]" type="email" autocomplete="email" placeholder="you@yourproduct.com" aria-describedby="ai-email-err" required>
+              <button class="btn btn-primary" type="submit" id="ai-submit">Send me the states</button>
+            </div>
+            <div class="hp" aria-hidden="true"><label for="ai-website">Leave this empty</label><input id="ai-website" name="website" type="text" tabindex="-1" autocomplete="off"></div>
+            <p class="err" id="ai-email-err" role="alert" hidden>Enter an email like you@domain.com.</p>
+            <p class="fine">You get the download right here. We also send you one email to confirm your address. Confirm it to get the files by email and the occasional note about new packs. Unsubscribe anytime. <a href="privacy.html#newsletter">Privacy policy</a></p>
+          </div>
+        </form>
+        <div class="sent" id="ai-sent" hidden>
+          <span class="anim" id="ai-sent-anim"></span>
+          <h3>Your AI states are ready.</h3>
+          <a class="btn btn-primary" href="downloads/zeltrium-ai-states-free.zip" download>Download the 5 AI states (.zip, 147 KB)</a>
+          <p>One more thing: we sent a confirmation email to <b id="ai-sent-to"></b>. Click the button in it to get new packs first. Nothing there? Look in Spam or Promotions.</p>
+          <button class="btn btn-ghost" type="button" id="ai-reset">Use another email</button>
+        </div>
+      </div>
+    </div>
+    <div class="ai-row" id="ai-row"></div>
   </section>
 
   <section id="custom" aria-labelledby="custom-h">
