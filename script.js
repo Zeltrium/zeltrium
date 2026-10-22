@@ -168,7 +168,7 @@ const SOURCE = (() => {
       form.hidden = true; sent.hidden = false;
       if (window.lottie && window.ANIMS) { if (!sentP) sentP = player(document.getElementById('sent-anim'), 'success', {map:SET.light}); play(sentP); }
     } catch (x) {
-      err.textContent = 'Couldn\'t reach the mail server. Check your connection and try again, or email zeltriumstudio@gmail.com.';
+      err.textContent = 'Couldn\'t reach the mail server. Check your connection and try again, or email hello@zeltrium.com.';
       err.hidden = false;
     } finally {
       submit.disabled = false; submit.textContent = 'Send me the pack';
