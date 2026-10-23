@@ -50,7 +50,8 @@ section{padding-block:96px;border-top:1px solid var(--line)}
 .nav a{text-decoration:none}
 .nav a:hover{color:var(--paper)}
 .nav .btn{min-height:40px;padding:0 16px;font-size:14px;color:var(--night)}
-@media (max-width:760px){.nav .hide-m{display:none}}
+@media (max-width:1000px){.nav .hide-m{display:none}}
+.nav a{white-space:nowrap}
 @media (max-width:420px){.logo img{height:18px}.nav .btn{padding:0 12px}}
 
 /* animation tiles */
@@ -262,3 +263,30 @@ footer{border-top:1px solid var(--line);padding-block:48px 56px}
 .ai .form-card{justify-content:center}
 .ai-row{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:12px;margin-top:24px}
 @media (max-width:560px){.ai-row{gap:6px}.ai-row .tile{border-radius:12px}.ai-row .cap{display:none}.chat-hint{display:none}.chat-log{min-height:220px}}
+
+/* work */
+.work{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:20px}
+@media (max-width:860px){.work{grid-template-columns:minmax(0,1fr)}}
+.work-card{background:var(--surface);border:1px solid var(--line);border-radius:24px;overflow:hidden;display:flex;flex-direction:column;min-width:0}
+.work-media{aspect-ratio:16/9;background:var(--night);cursor:pointer}
+.work-media video{display:block;width:100%;height:100%;object-fit:cover}
+.work-body{padding:24px 26px 26px;display:flex;flex-direction:column;gap:10px;flex:1}
+.work-body h3{font-size:26px}
+.work-body p{color:var(--soft)}
+.work-body .work-meta{margin-top:auto;padding-top:6px;font-family:var(--mono);font-size:12px;color:var(--muted)}
+.work-quote .work-body{justify-content:flex-start;padding:32px}
+.work-quote blockquote{margin:auto 0 0;padding:22px 0 0;border-top:1px solid var(--line)}
+.work-quote blockquote p{font-family:var(--display);font-size:clamp(26px,3vw,36px);line-height:1.08;letter-spacing:-.02em;color:var(--paper)}
+.work-quote blockquote footer{margin-top:12px;font-size:14px;color:var(--muted)}
+.work-quote blockquote a{color:var(--paper)}
+
+/* about */
+.about{display:grid;grid-template-columns:240px minmax(0,1fr);gap:48px;align-items:start}
+@media (max-width:760px){.about{grid-template-columns:minmax(0,1fr);gap:28px}}
+.about-photo{width:240px;height:240px;border-radius:24px;object-fit:cover;display:block;filter:grayscale(.15)}
+@media (max-width:760px){.about-photo{width:160px;height:160px;border-radius:20px}}
+.about-copy{display:flex;flex-direction:column;gap:18px}
+.about-copy .lead{color:var(--soft)}
+.about-how{color:var(--muted);max-width:58ch}
+.about-copy .cta{margin-top:8px}
+.work-quote blockquote footer{border:0;padding:0}
