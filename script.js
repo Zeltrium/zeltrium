@@ -1,7 +1,7 @@
 /* Zeltrium — page behaviour.
    Animations: assets/lottie/preview.dat (all 30 from the pack's dark set, one request), played with lottie_light (MIT).
    No cookies, no analytics, no third-party scripts. The only outside request is the
-   free-pack form posting the email to MailerLite. */
+   free-pack forms posting the email to MailerLite. AI states previews load from assets/lottie/ai.dat. */
 document.querySelectorAll('.year').forEach(el => el.textContent = new Date().getFullYear());
 let ANIMS = null, SIZES = {};
 const NAMES = {success:'Success',error:'Error',warning:'Warning',info:'Info',help:'Help',notification:'Notification',
@@ -143,10 +143,11 @@ const SOURCE = (() => {
   return hit ? known[hit] : host.slice(0, 60);
 })();
 
-// free-pack form → MailerLite (double opt-in is switched on in MailerLite)
-(function(){
-  const form = document.getElementById('free-form'), email = document.getElementById('email'), err = document.getElementById('email-err');
-  const sent = document.getElementById('sent'), submit = document.getElementById('free-submit');
+// free-pack forms → MailerLite (double opt-in is switched on in MailerLite). One form per free pack.
+function wireForm(prefix, label){
+  const $ = x => document.getElementById(prefix + x);
+  const form = $('form'), email = $('email'), err = $('email-err'), sent = $('sent'), submit = $('submit');
+  if (!form) return;
   let sentP = null;
   form.addEventListener('submit', async e => {
     e.preventDefault();
@@ -164,18 +165,18 @@ const SOURCE = (() => {
     data.append('anticsrf', 'true');
     try {
       await fetch(form.action, {method:'POST', body:data, mode:'no-cors'});
-      document.getElementById('sent-to').textContent = value;
+      $('sent-to').textContent = value;
       form.hidden = true; sent.hidden = false;
-      if (window.lottie && window.ANIMS) { if (!sentP) sentP = player(document.getElementById('sent-anim'), 'success', {map:SET.light}); play(sentP); }
+      if (window.lottie && window.ANIMS) { if (!sentP) sentP = player($('sent-anim'), 'success', {map:SET.light}); play(sentP); }
     } catch (x) {
       err.textContent = 'Couldn\'t reach the mail server. Check your connection and try again, or email hello@zeltrium.com.';
       err.hidden = false;
     } finally {
-      submit.disabled = false; submit.textContent = 'Send me the pack';
+      submit.disabled = false; submit.textContent = label;
     }
   });
-  document.getElementById('reset-form').addEventListener('click', () => { sent.hidden = true; form.hidden = false; email.value = ''; email.focus(); });
-})();
+  $('reset').addEventListener('click', () => { sent.hidden = true; form.hidden = false; email.value = ''; email.focus(); });
+}
 
 // previews are lightly encoded so the files aren't one right-click away
 function decode(txt){
@@ -298,3 +299,148 @@ const io = new IntersectionObserver(es => es.forEach(e => { const p = players.fi
 players.forEach(p => { io.observe(p.el); if (p.auto && !p.timer) start(p); });
 buildRC({}, false);
 }
+
+wireForm('free-', 'Send me the pack');
+wireForm('ai-', 'Send me the states');
+
+/* AI states: a small demo chat plus five tiles. Loads assets/lottie/ai.dat only when the section comes near. */
+(function(){
+  const sec = document.getElementById('ai');
+  if (!sec) return;
+  const AI = {};
+  const AI_NAMES = {thinking:'Thinking', typing:'Typing', send_stop:'Send → stop', listening:'Listening', searching:'Searching'};
+  const STOP = {};
+  const wait = ms => new Promise(r => setTimeout(r, ms));
+  const load = el => lottie.loadAnimation({container:el, renderer:'svg', loop:false, autoplay:false, animationData:JSON.parse(JSON.stringify(AI[el.dataset.k]))});
+  // play frames a→b (a > b plays backwards), resolve when done
+  function seg(anim, a, b){
+    return new Promise(res => {
+      const done = () => { anim.removeEventListener('complete', done); res(); };
+      anim.addEventListener('complete', done);
+      anim.playSegments([a, b], true);
+    });
+  }
+  const mk = (anim, name) => { const m = anim.animationData.markers.find(x => x.cm === name); return [m.tm, m.tm + m.dr]; };
+
+  function start(){
+    // tiles: each one runs its own cycle on click, and on its own while visible
+    const row = document.getElementById('ai-row');
+    const tiles = Object.keys(AI_NAMES).map((k, i) => {
+      const b = document.createElement('button'); b.type = 'button'; b.className = 'tile'; b.setAttribute('aria-label', 'Play ' + AI_NAMES[k]);
+      const a = document.createElement('span'); a.className = 'anim'; a.dataset.k = k; a.style.width = a.style.height = '50%';
+      const c = document.createElement('span'); c.className = 'cap'; c.innerHTML = '<b>' + AI_NAMES[k] + '</b>';
+      b.append(a, c); row.appendChild(b);
+      const t = {k, anim:load(a), busy:false, auto:!reduce, visible:false};
+      whenReady(t.anim, () => { if (k !== 'send_stop') t.anim.goToAndStop(mk(t.anim, 'loop')[0], true); });
+      t.cycle = async () => {
+        if (t.busy) return; t.busy = true;
+        const an = t.anim;
+        // at rest a tile shows the start of its loop; a cycle is loop, loop, out, then in again
+        if (k === 'send_stop') { await seg(an, 0, 16); await wait(900); await seg(an, 16, 0); }
+        else { const [i0, i1] = mk(an, 'in'), [l0, l1] = mk(an, 'loop'), [o0, o1] = mk(an, 'out');
+          await seg(an, l0, l1); await seg(an, l0, l1); await seg(an, o0, o1); await wait(500); await seg(an, i0, i1); }
+        t.busy = false;
+      };
+      b.addEventListener('click', () => { t.auto = false; t.cycle(); });
+      return t;
+    });
+    const tio = new IntersectionObserver(es => es.forEach(e => { tiles.forEach(t => t.visible = e.isIntersecting); }));
+    tio.observe(row);
+    tiles.forEach((t, i) => (async () => { await wait(400 + i * 500); for (;;) { if (t.auto && t.visible && !paused) { await t.cycle(); await wait(1200 + Math.random() * 800); } else await wait(600); } })());
+
+    // chat
+    const log = document.getElementById('chat-log'), box = document.getElementById('composer-text');
+    const micBtn = document.getElementById('mic-btn'), sendBtn = document.getElementById('send-btn');
+    const micEl = document.getElementById('mic-anim'), sendEl = document.getElementById('send-anim');
+    micEl.dataset.k = 'listening'; sendEl.dataset.k = 'send_stop';
+    const mic = load(micEl), send = load(sendEl);
+    const SCRIPT = [
+      {q:'Which Lottie player works in Flutter?', search:true, a:'The lottie package. Add it to pubspec.yaml, then call Lottie.asset(\'like.json\', repeat: false).'},
+      {q:'Make the like button feel alive', voice:true, a:'Play the like animation forward on tap and backwards on undo. Rest on frame 0, so it never looks stuck.'}
+    ];
+    let run = 0, busy = false, turn = 0, visible = false, auto = !reduce, generating = false;
+    const check = id => { if (id !== run) throw STOP; };
+    const placeholder = () => { box.innerHTML = '<span class="ph">Ask anything</span>'; };
+    async function typeInto(el, text, ms, id){ el.textContent = ''; for (const ch of text) { check(id); el.textContent += ch; await wait(ms); } }
+    function bubble(cls){ const d = document.createElement('div'); d.className = 'msg ' + cls; log.appendChild(d); while (log.children.length > 4) log.firstChild.remove(); return d; }
+    function status(){
+      const d = bubble('bot'); const i = document.createElement('span'); i.className = 'anim st'; const t = document.createElement('span'); t.className = 'st-t';
+      d.append(i, t); return {d, i, t, anim:null};
+    }
+    async function show(st, k, label, cycles, id){
+      if (st.anim) st.anim.destroy();
+      st.i.dataset.k = k; st.anim = load(st.i); st.t.textContent = label; st.t.className = 'st-t dim';
+      const [i0, i1] = mk(st.anim, 'in'), [l0, l1] = mk(st.anim, 'loop'), [o0, o1] = mk(st.anim, 'out');
+      await seg(st.anim, i0, i1); check(id);
+      for (let n = 0; n < cycles; n++) { await seg(st.anim, l0, l1); check(id); }
+      await seg(st.anim, o0, o1); check(id);
+    }
+    async function ask(voice){
+      if (busy) return;
+      const id = ++run; busy = true;
+      const s = SCRIPT[turn++ % SCRIPT.length];
+      try {
+        if (voice ?? s.voice) {
+          micBtn.classList.add('on'); micBtn.setAttribute('aria-pressed', 'true');
+          const [i0, i1] = mk(mic, 'in'), [l0, l1] = mk(mic, 'loop'), [o0, o1] = mk(mic, 'out');
+          const p = seg(mic, i0, i1).then(() => seg(mic, l0, l1));
+          await wait(350); check(id);
+          box.innerHTML = '<span></span>'; await typeInto(box.firstChild, s.q, 38, id);
+          await p; check(id); await seg(mic, o0, o1);
+          micBtn.classList.remove('on'); micBtn.setAttribute('aria-pressed', 'false');
+        } else {
+          box.innerHTML = '<span></span>'; await typeInto(box.firstChild, s.q, 45, id);
+        }
+        await wait(300); check(id);
+        // send → stop
+        generating = true; sendBtn.setAttribute('aria-label', 'Stop generating');
+        seg(send, 0, 16);
+        const u = bubble('user'); u.textContent = s.q; placeholder();
+        const st = status();
+        if (s.search) await show(st, 'searching', 'Searching the web', 1, id);
+        await show(st, 'thinking', 'Thinking', 1, id);
+        // typing: icon loops while the answer streams in
+        st.anim.destroy(); st.i.dataset.k = 'typing'; st.anim = load(st.i); st.t.textContent = ''; st.t.className = 'st-t';
+        const [i0, i1] = mk(st.anim, 'in'), [l0, l1] = mk(st.anim, 'loop'), [o0, o1] = mk(st.anim, 'out');
+        await seg(st.anim, i0, i1);
+        let streaming = true;
+        const loopIcon = (async () => { while (streaming && id === run) await seg(st.anim, l0, l1); })();
+        await typeInto(st.t, s.a, 22, id);
+        streaming = false; await loopIcon; check(id);
+        await seg(st.anim, o0, o1); st.anim.destroy(); st.i.remove(); st.d.classList.add('done');
+        await finish();
+      } catch (e) { if (e !== STOP) throw e; }
+      finally { if (id === run) busy = false; }
+    }
+    async function finish(){
+      if (!generating) return;
+      generating = false; sendBtn.setAttribute('aria-label', 'Send');
+      await seg(send, 16, 0);
+    }
+    async function stop(){
+      run++; busy = false;
+      log.querySelectorAll('.st').forEach(el => el.remove());
+      const last = log.lastElementChild;
+      if (last && last.classList.contains('bot')) { last.classList.add('done'); const t = last.querySelector('.st-t'); if (t && t.classList.contains('dim')) t.textContent = 'Stopped.'; else if (t) t.textContent += ' …'; }
+      micBtn.classList.remove('on'); mic.goToAndStop(0, true); placeholder();
+      await finish();
+    }
+    sendBtn.addEventListener('click', () => { auto = false; if (generating) stop(); else ask(false); });
+    micBtn.addEventListener('click', () => { auto = false; if (busy) return; ask(true); });
+    new IntersectionObserver(es => es.forEach(e => visible = e.isIntersecting), {threshold:.4}).observe(document.getElementById('chat'));
+    // no autoplay with reduced motion: show one finished exchange instead
+    if (reduce) { const u = bubble('user'); u.textContent = SCRIPT[0].q; const b = bubble('bot done'); b.innerHTML = '<span class="st-t"></span>'; b.firstChild.textContent = SCRIPT[0].a; turn = 1; }
+    (async () => { for (;;) { if (auto && visible && !paused && !busy) { await ask(); await wait(2600); } else await wait(700); } })();
+  }
+
+  const io = new IntersectionObserver(es => {
+    if (!es.some(e => e.isIntersecting)) return;
+    io.disconnect();
+    fetch('assets/lottie/ai.dat').then(r => r.text()).then(decode).then(d => {
+      Object.assign(AI, d.anims);
+      if (window.lottie) whenLottie();
+    }).catch(() => {});
+  }, {rootMargin:'600px 0px'});
+  function whenLottie(){ start(); }
+  io.observe(sec);
+})();
