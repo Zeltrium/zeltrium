@@ -312,12 +312,23 @@ wireForm('ai-', 'Send me the states');
   const STOP = {};
   const wait = ms => new Promise(r => setTimeout(r, ms));
   const load = el => lottie.loadAnimation({container:el, renderer:'svg', loop:false, autoplay:false, animationData:JSON.parse(JSON.stringify(AI[el.dataset.k]))});
-  // play frames a→b (a > b plays backwards), resolve when done
+  // play frames a→b (a > b plays backwards) and land exactly on b, so every state rests on its marker frame.
+  // (playSegments treats the end as exclusive and stops one frame short, which left half-drawn icons.)
   function seg(anim, a, b){
+    if (anim.__segOff) anim.__segOff();
+    const last = anim.totalFrames - 1;
+    a = Math.min(a, last); b = Math.min(b, last);
     return new Promise(res => {
-      const done = () => { anim.removeEventListener('complete', done); res(); };
-      anim.addEventListener('complete', done);
-      anim.playSegments([a, b], true);
+      const dir = b >= a ? 1 : -1;
+      const off = () => { anim.removeEventListener('enterFrame', tick); anim.removeEventListener('complete', end); anim.__segOff = null; };
+      const end = () => { off(); anim.goToAndStop(b, true); res(); };
+      const tick = () => { if (dir > 0 ? anim.currentFrame >= b : anim.currentFrame <= b) end(); };
+      anim.__segOff = off;
+      anim.addEventListener('enterFrame', tick);
+      anim.addEventListener('complete', end);
+      anim.goToAndStop(a, true);
+      anim.setDirection(dir);
+      anim.play();
     });
   }
   const mk = (anim, name) => { const m = anim.animationData.markers.find(x => x.cm === name); return [m.tm, m.tm + m.dr]; };
