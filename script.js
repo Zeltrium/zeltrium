@@ -1,7 +1,7 @@
 /* Zeltrium — page behaviour.
    Animations: assets/lottie/preview.dat (all 30 from the pack's dark set, one request), played with lottie_light (MIT).
-   No cookies, no analytics, no third-party scripts. The only outside request is the
-   free-pack forms posting the email to MailerLite. AI states previews load from assets/lottie/ai.dat. */
+   No cookies and nothing stored in the browser. Outside requests: the free-pack forms post the email to
+   MailerLite, and assets/js/goatcounter-count.js (hosted here) counts visits and clicks at GoatCounter. AI states previews load from assets/lottie/ai.dat. */
 document.querySelectorAll('.year').forEach(el => el.textContent = new Date().getFullYear());
 let ANIMS = null, SIZES = {};
 const NAMES = {success:'Success',error:'Error',warning:'Warning',info:'Info',help:'Help',notification:'Notification',
@@ -167,6 +167,7 @@ function wireForm(prefix, label){
       await fetch(form.action, {method:'POST', body:data, mode:'no-cors'});
       $('sent-to').textContent = value;
       form.hidden = true; sent.hidden = false;
+      if (window.goatcounter && goatcounter.count) goatcounter.count({path:prefix + 'signup', title:label, event:true});
       if (window.lottie && window.ANIMS) { if (!sentP) sentP = player($('sent-anim'), 'success', {map:SET.light}); play(sentP); }
     } catch (x) {
       err.textContent = 'Couldn\'t reach the mail server. Check your connection and try again, or email hello@zeltrium.com.';
