@@ -221,6 +221,10 @@ const cf = document.getElementById('cat-filter');
 });
 }
 
+// compact grid on the studio page: all 30, small, clickable
+const mg = document.getElementById('mini-grid');
+if (mg) ORDER.forEach((k, i) => mg.appendChild(tile(k, i % 10, false).b));
+
 // free five
 const fr = document.getElementById('free-row');
 if (fr) {
@@ -313,6 +317,9 @@ buildRC({}, false);
 // start loops, pause what is off screen
 const io = new IntersectionObserver(es => es.forEach(e => { const p = players.find(x => x.el === e.target); if (p) p.visible = e.isIntersecting; }));
 players.forEach(p => { io.observe(p.el); if (p.auto && !p.timer) start(p); });
+
+// the grids above were empty when the browser jumped to #free or #product, so jump again now that they are filled
+if (location.hash.length > 1) { const t = document.getElementById(location.hash.slice(1)); if (t) requestAnimationFrame(() => t.scrollIntoView()); }
 }
 
 wireForm('free-', 'Send me the pack');
