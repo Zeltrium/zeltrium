@@ -18,7 +18,7 @@ GitHub Pages показывает ветку `main`. Изменения идут
 подтверждает адрес, потом автоматизация шлёт письмо с паком от hello@zeltrium.com
 (открытия не отслеживаем).
 
-| Пак | Форма в `index.html` | Форма MailerLite → группа | Автоматизация | Исходник письма | Архив |
+| Пак | Форма в `packs.html` | Форма MailerLite → группа | Автоматизация | Исходник письма | Архив |
 |---|---|---|---|---|---|
 | Free 5 | `free-form` → 200318522151143170 | Zeltrium free pack | Zeltrium free pack | `email/free-5-delivery.html` | `downloads/zeltrium-free-5.zip` |
 | AI states | `ai-form` → 202105914383140548 | AI states free | Zeltrium AI states | `email/ai-states-delivery.html` | `downloads/zeltrium-ai-states-free.zip` |
@@ -29,7 +29,7 @@ GitHub Pages показывает ветку `main`. Изменения идут
 ## Аналитика (GoatCounter)
 `assets/js/goatcounter-count.js` подключён на всех страницах и шлёт данные в
 https://zeltrium.goatcounter.com. Клики считаются по `data-goatcounter-click`
-(скачивания, Gumroad, бриф, Upwork); `script.js` добавляет `free-signup` / `ai-signup`.
+(скачивания, Gumroad, бриф, Start a project, Behance, паки); `script.js` добавляет `free-signup` / `ai-signup`.
 Если меняешь, что собирается, обнови раздел 4 в `privacy.html`.
 
 ## Замена анимаций
