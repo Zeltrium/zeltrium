@@ -17,7 +17,7 @@ Both forms post to MailerLite; the site shows the download right after the form 
 MailerLite's own double opt-in email (not customizable on the free plan) confirms the address,
 then the automation sends the delivery email from hello@zeltrium.com (opens are not tracked).
 
-| Pack | Form id in `index.html` | MailerLite form → group | Automation | Email source | Download |
+| Pack | Form id in `packs.html` | MailerLite form → group | Automation | Email source | Download |
 |---|---|---|---|---|---|
 | Free 5 | `free-form` → 200318522151143170 | Zeltrium free pack | Zeltrium free pack | `email/free-5-delivery.html` | `downloads/zeltrium-free-5.zip` |
 | AI states | `ai-form` → 202105914383140548 | AI states free | Zeltrium AI states | `email/ai-states-delivery.html` | `downloads/zeltrium-ai-states-free.zip` |
@@ -28,7 +28,7 @@ the switch keep working.
 ## Analytics (GoatCounter)
 `assets/js/goatcounter-count.js` is loaded on every page and reports to
 https://zeltrium.goatcounter.com. Click events come from `data-goatcounter-click`
-(downloads, Gumroad, brief, Upwork); `script.js` adds `free-signup` / `ai-signup`.
+(downloads, Gumroad, brief, Start a project, Behance, packs); `script.js` adds `free-signup` / `ai-signup`.
 If you change what is collected, update section 4 of `privacy.html`.
 
 ## Changing animations
