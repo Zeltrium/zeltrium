@@ -329,3 +329,17 @@ footer{border-top:1px solid var(--line);padding-block:48px 56px}
 .brief .btn-primary{align-self:flex-start}
 .pack-cta{margin-top:32px}
 .hero-media figcaption b{color:var(--paper);font-weight:500}
+.brands{display:flex;flex-wrap:wrap;align-items:baseline;gap:8px 22px;padding-block:28px;border-top:1px solid var(--line);color:var(--muted);font-size:15px}
+.brands b{font-family:var(--display);font-size:22px;letter-spacing:-.01em;color:var(--paper)}
+.brands-note{flex-basis:100%}
+.mini-grid{display:grid;grid-template-columns:repeat(10,minmax(0,1fr));gap:8px}
+.mini-grid .tile{border-radius:12px}
+@media (max-width:760px){.mini-grid{grid-template-columns:repeat(6,minmax(0,1fr));gap:6px}.mini-grid .tile{border-radius:10px}}
+.pack-cta{align-items:center}
+.pack-ai{color:var(--paper);text-decoration:none;font-weight:600;margin-left:8px}
+.pack-ai:hover{color:var(--signal)}
+.quote{margin:32px 0 0;padding:28px 0 0;border-top:1px solid var(--line)}
+.quote blockquote{margin:0}
+.quote blockquote p{font-family:var(--display);font-size:clamp(26px,3vw,36px);line-height:1.08;letter-spacing:-.02em;max-width:30ch}
+.quote figcaption{margin-top:12px;font-size:14px;color:var(--muted)}
+.brands + section{border-top:0;padding-top:56px}
