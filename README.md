@@ -2,9 +2,9 @@
 
 Static site for Zeltrium, a motion studio for digital products. Hosted on GitHub Pages (custom domain in `CNAME`).
 
-- `index.html` — the studio page for studios and product teams: hero, selected work, two ways to work, white-label, process, packs teaser, FAQ, brief form (opens the visitor's email app, sends nothing). Old pack anchors (`/#free`, `/#ai`, …) redirect to `packs.html`
+- `index.html` — the studio page for studios and product teams: hero (the pack video as proof), selected work, the live 30-animation pack, two ways to work, white-label, process, FAQ, brief form (opens the visitor's email app, sends nothing). Old pack anchors (`/#free`, `/#ai`, …) redirect to `packs.html`
 - `packs.html` — the Lottie packs: hero, before/after, the 30-animation pack, code, recolor, free 5, full pack, 5 free AI states (demo chat), FAQ
-- `styles.css` — styles for all pages; `main.js` — behaviour of `index.html`; `script.js` — behaviour of `packs.html`
+- `styles.css` — styles for all pages; `script.js` — animations, work clips and forms on both pages (each block runs only if its section is on the page); `main.js` — the brief form on `index.html`
 - `imprint.html`, `privacy.html`, `contact.html`, `license.html` — legal and info pages
 - `assets/lottie/preview.dat` — all 30 animations for the on-page previews (pack v1.0 dark set), lightly encoded, not a download
 - `assets/lottie/ai.dat` — the 5 AI states (dark set) for the demo chat and tiles, same encoding, loaded only when the section comes near

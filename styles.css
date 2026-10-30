@@ -327,3 +327,5 @@ footer{border-top:1px solid var(--line);padding-block:48px 56px}
 .brief textarea{resize:vertical;min-height:110px}
 .brief input:focus-visible,.brief select:focus-visible,.brief textarea:focus-visible{outline:2px solid var(--signal);outline-offset:1px}
 .brief .btn-primary{align-self:flex-start}
+.pack-cta{margin-top:32px}
+.hero-media figcaption b{color:var(--paper);font-weight:500}

@@ -194,6 +194,7 @@ fetch('assets/lottie/preview.dat').then(r => r.text()).then(decode).then(d => {
 function init(){
 // hero
 const hg = document.getElementById('hero-grid');
+if (hg) {
 HERO.forEach((k, i) => hg.appendChild(tile(k, i, true).b));
 const hint = document.createElement('div'); hint.className = 'hint';
 hint.innerHTML = '<span>click any tile</span>';
@@ -202,9 +203,11 @@ mb.setAttribute('aria-pressed', 'false'); mb.textContent = reduce ? 'Motion: on 
 if (reduce) mb.disabled = true;
 mb.addEventListener('click', () => { paused = !paused; mb.setAttribute('aria-pressed', String(paused)); mb.textContent = paused ? 'Play motion' : 'Pause motion'; });
 hint.appendChild(mb); hg.appendChild(hint);
+}
 
 // full pack, with a category filter
 const pg = document.getElementById('pack-grid');
+if (pg) {
 const packTiles = ORDER.map((k, i) => { const t = tile(k, i % 6, true); t.b.dataset.key = k; pg.appendChild(t.b); return t; });
 const cf = document.getElementById('cat-filter');
 [['All', ORDER]].concat(CATS).forEach(([name, keys], i) => {
@@ -216,29 +219,36 @@ const cf = document.getElementById('cat-filter');
   });
   cf.appendChild(c);
 });
+}
 
 // free five
 const fr = document.getElementById('free-row');
+if (fr) {
 FREE.forEach((k, i) => fr.appendChild(tile(k, i, false).b));
+}
 
 // product mosaic
 const pv = document.getElementById('prod-visual');
+if (pv) {
 ORDER.forEach((k, i) => {
   const m = document.createElement('div'); m.className = 'mini';
   const a = document.createElement('span'); a.className = 'anim'; size(a, k, 58); m.appendChild(a); pv.appendChild(m);
   start(player(a, k, {auto:true, offset:500 + (i * 397) % 4000}));
 });
+}
 
 // before / after: the static side stays on its resting frame; the live side plays once on arrival, then waits for you
 document.querySelectorAll('[data-static]').forEach(el => player(el, el.dataset.static));
 const live = [];
 document.querySelectorAll('[data-live]').forEach(btn => { const p = player(btn.querySelector('.anim'), btn.dataset.live); bind(btn, p); live.push(p); });
+if (document.querySelector('.panel.live')) {
 const baIO = new IntersectionObserver(es => es.forEach(e => {
   if (!e.isIntersecting) return;
   baIO.disconnect();
   if (!reduce) live.forEach((p, i) => setTimeout(() => play(p), 500 + i * 650));
 }), {threshold:.6});
 baIO.observe(document.querySelector('.panel.live'));
+}
 
 // code
 const SNIPS = {
@@ -250,6 +260,7 @@ const SNIPS = {
   Webflow: '<span class="c">// No code</span>\n1. Add → Lottie Animation\n2. Upload like.json\n3. Interactions → Mouse click → Play Lottie'
 };
 const tabs = document.getElementById('tabs'), pre = document.getElementById('code-pre');
+if (tabs) {
 Object.keys(SNIPS).forEach((name, i) => {
   const t = document.createElement('button'); t.type = 'button'; t.setAttribute('role', 'tab'); t.textContent = name; t.id = 'tab-' + name;
   t.setAttribute('aria-selected', i === 0 ? 'true' : 'false');
@@ -264,8 +275,10 @@ document.getElementById('copy-btn').addEventListener('click', () => {
   const fallback = () => { const r = document.createRange(); r.selectNodeContents(pre); const s = getSelection(); s.removeAllRanges(); s.addRange(r); label.textContent = 'Selected'; };
   try { navigator.clipboard.writeText(pre.textContent).then(done, fallback); } catch (e) { fallback(); }
 });
+}
 
 // recolor: each swatch is a role map on top of the dark or light set
+if (document.getElementById('rc-grid')) {
 const SW = [
   ['Zeltrium', {}, '#FF4A1C'],
   ['Ocean',  {accent:'#2F7DFD'}, '#2F7DFD'],
@@ -294,11 +307,12 @@ SW.forEach(([name, map, color, light], i) => {
   s.addEventListener('click', () => { swWrap.querySelectorAll('.sw').forEach(x => x.setAttribute('aria-pressed', 'false')); s.setAttribute('aria-pressed', 'true'); buildRC(map, light); });
   swWrap.appendChild(s);
 });
+buildRC({}, false);
+}
 
 // start loops, pause what is off screen
 const io = new IntersectionObserver(es => es.forEach(e => { const p = players.find(x => x.el === e.target); if (p) p.visible = e.isIntersecting; }));
 players.forEach(p => { io.observe(p.el); if (p.auto && !p.timer) start(p); });
-buildRC({}, false);
 }
 
 wireForm('free-', 'Send me the pack');
