@@ -3,19 +3,19 @@
 Static site for Zeltrium, white-label motion for studios and agencies. Hosted on GitHub Pages (custom domain in `CNAME`).
 
 - `index.html` — the studio page for studios and agencies: hero (video; the pack video until the hero loop is ready), selected work (AI States, Ply, Withings, Subway) with three quotes, what I take on, white-label, process, FAQ, brief form (opens the visitor's email app, sends nothing). Old pack anchors (`/#free`, `/#ai`, …) redirect to `packs.html`
-- `packs.html` — the Lottie packs: hero, before/after, the 30-animation pack, code, recolor, free 5, full pack, 5 free AI states (demo chat), FAQ
+- `packs.html` — the Lottie packs: hero, before/after, the 30-animation pack, code, recolor, free 5, full pack, FAQ
 - `styles.css` — styles for all pages; `script.js` — animations, work clips and forms on both pages (each block runs only if its section is on the page); `main.js` — the brief form on `index.html`
 - `imprint.html`, `privacy.html`, `contact.html`, `license.html` — legal and info pages
 - `assets/lottie/preview.dat` — all 30 animations for the on-page previews (pack v1.0 dark set), lightly encoded, not a download
-- `assets/lottie/ai.dat` — the 5 AI states (dark set) for the demo chat and tiles, same encoding, loaded only when the section comes near
+- `assets/lottie/ai.dat` — the 5 AI states (dark set); unused since the AI states section was removed on 14.11.2026
 - `assets/js/lottie_light.min.js` — lottie-web light player (MIT, see `lottie-web-LICENSE.md`)
 - `assets/js/goatcounter-count.js` — our copy of GoatCounter's count.js (ISC): no screen width, no localStorage
 - `assets/work/` — clips (WebM + MP4), posters and the portrait for the studio page (`ui30` and `ai-states` are cut from the Behance case videos)
 - `assets/fonts/` — Bricolage Grotesque, Onest, JetBrains Mono, Latin subset (SIL OFL)
 - `assets/brand/`, `assets/icons/` — logo, symbol, favicons, Open Graph image
 - `assets/email/` — images used in the MailerLite emails
-- `email/` — source HTML of the two delivery emails (free 5, AI states)
-- `downloads/` — `zeltrium-free-5.zip` and `zeltrium-ai-states-free.zip`, shown right after sign-up and linked in the emails
+- `email/` — source HTML of the delivery emails (free 5; AI states kept as a record)
+- `downloads/` — `zeltrium-free-5.zip`, shown right after sign-up and linked in the email
 - `free/` — files for dev.to lessons
 
 No cookies and nothing stored in the browser. Outside requests: the two free-pack forms post the
