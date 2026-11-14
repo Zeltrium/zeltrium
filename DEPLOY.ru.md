@@ -21,7 +21,8 @@ GitHub Pages показывает ветку `main`. Изменения идут
 | Пак | Форма в `packs.html` | Форма MailerLite → группа | Автоматизация | Исходник письма | Архив |
 |---|---|---|---|---|---|
 | Free 5 | `free-form` → 200318522151143170 | Zeltrium free pack | Zeltrium free pack | `email/free-5-delivery.html` | `downloads/zeltrium-free-5.zip` |
-| AI states | `ai-form` → 202105914383140548 | AI states free | Zeltrium AI states | `email/ai-states-delivery.html` | `downloads/zeltrium-ai-states-free.zip` |
+
+AI-состояния были бесплатными до 14.11.2026; форма, секция и zip убраны (переехали в премиум IconScout). Автоматизацию «Zeltrium AI states» в MailerLite выключить; `email/ai-states-delivery.html` оставлен для истории.
 
 Старый `downloads/ui-microinteractions-free-pack.zip` оставлен, чтобы ссылки в уже
 отправленных письмах работали.

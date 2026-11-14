@@ -13,14 +13,15 @@ GitHub Pages serves the `main` branch. Changes go through a pull request; Roman 
 and the site updates within a minute or two at https://zeltrium.com.
 
 ## Free packs (MailerLite)
-Both forms post to MailerLite; the site shows the download right after the form is sent.
+The form posts to MailerLite; the site shows the download right after the form is sent.
 MailerLite's own double opt-in email (not customizable on the free plan) confirms the address,
 then the automation sends the delivery email from hello@zeltrium.com (opens are not tracked).
 
 | Pack | Form id in `packs.html` | MailerLite form → group | Automation | Email source | Download |
 |---|---|---|---|---|---|
 | Free 5 | `free-form` → 200318522151143170 | Zeltrium free pack | Zeltrium free pack | `email/free-5-delivery.html` | `downloads/zeltrium-free-5.zip` |
-| AI states | `ai-form` → 202105914383140548 | AI states free | Zeltrium AI states | `email/ai-states-delivery.html` | `downloads/zeltrium-ai-states-free.zip` |
+
+AI states were free until 14.11.2026; the form, section and zip are gone (they moved to IconScout premium). Switch off the "Zeltrium AI states" automation in MailerLite; `email/ai-states-delivery.html` stays as a record.
 
 The old `downloads/ui-microinteractions-free-pack.zip` stays so links in emails sent before
 the switch keep working.
